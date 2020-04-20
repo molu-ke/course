@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue编译器</title>
+</head>
+
+<body>
+    <script>
+        /*
+            编译器
+                词法分析   句法分配  代码生成
+
+                token  词   正则方式建立的规则  标签  属性  指令  不需要解析的内容   插值内容  完整
+        
+        */
+
+        // Vue编译器词法分析阶段所用的正则：
+        var attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/
+        var ncname = '[a-zA-Z_][\\w\\-\\.]*'
+        var qnameCapture = "((?:" + ncname + "\\:)?" + ncname + ")"
+        var startTagOpen = new RegExp(("^<" + qnameCapture))
+        var startTagClose = /^\s*(\/?)>/
+        var endTag = new RegExp(("^<\\/" + qnameCapture + "[^>]*>"))
+        var doctype = /^<!DOCTYPE [^>]+>/i
+        var comment = /^<!\--/
+        var conditionalComment = /^<!\[/
+
+        function parseHTML(html) {
+
+            var index = 0
+            var startTagMatch = parseStartTag()
+            console.log(startTagMatch)
+
+            function parseStartTag() {
+                var start = html.match(startTagOpen)
+                if (start) {
+                    var match = {
+                        tagName: start[1], // div
+                        attrs: [],
+                        start: index
+                    }
+                    advance(start[0].length) // <div
+                    var end, attr;
+                    while (!(end = html.match(startTagClose)) && (attr = html.match(attribute))) {
+                        advance(attr[0].length);
+                        match.attrs.push(attr);
+                    }
+                    if (end) {
+                        match.unarySlash = end[1];
+                        advance(end[0].length);
+                        match.end = index;
+                        return match
+                    }
+                }
+              
+            }
+
+            function advance(n) {
+                index += n
+                html = html.substring(n)
+                // console.log(html)
+            }
+
+
+        }
+
+        parseHTML("<div id='app' v-if='ret'>{{ message }}</div>")
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>动画队列&/动画设计/动画实现</title>
+</head>
+<body>
+    <div class="box"></div>
+    <script src="jQuery.1.0.2.js"></script>
+    <script>
+        var box = $('box')
+
+        function func(next,hook){
+            console.log('this is a function')
+            next()
+            hook.empty.fire() // 清除工作
+        }
+
+        function wait(){
+            console.log('this is a wait function')
+        }
+
+        // 队列的名称
+        // 1.创建了box对应的数据仓库   2.数据仓库注册了firstqueue   3.func 函数push到了firstqueue
+        $.queue(box,'first',func)
+        // wait函数 push到了firstqueue
+        $.queue(box,'first',wait)
+
+        $.dequeue(box,'first')
+        // $.dequeue(box,'first')
+
+    </script>
+</body>
+</html>

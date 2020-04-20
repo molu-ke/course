@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>课程答疑</title>
+</head>
+<body>
+    <script src="./jQuery.1.0.2.js"></script>
+    <script>
+
+        // var obj = {}
+        // var callList = $.callbacks()
+        // callList.add(function(){
+        //     console.log(1,this)
+        // })
+        // callList.add(function(){
+        //     console.log(2)
+        // })
+        // callList.fireWith(obj)
+        
+
+
+
+        var wait = function(){
+            var deferred = $.Deferred()
+            setTimeout( () => {
+                deferred.resolve('success') //权限 绑定状态
+                // deferred.reject('fail')
+            },500)
+            return deferred.promise() // 状态凝固 让返回出去的对象只有add的功能
+        } 
+
+        // $.when(wait())
+        //     .done(function(res){
+        //         console.log(res)
+        //     })
+        //     .fail(function(res){
+        //         console.log(res)
+        //     })
+
+
+        // then 返回新的Deferred 对象，链式调用
+        // 第一个参数是resolved状态的回调函数，第二个参数（可选）是rejected状态的回调函数
+        wait().then(function(res){
+            console.log(1,res)
+            var der = $.Deferred()
+            der.resolve('第二次成功调用then') // done -> callback   newdefer.resolve -> done -> callback
+            return der.promise()
+        }
+        ,function(res){
+            console.log(2,res)
+        }
+        )
+        .then(function(res){
+            console.log(3,res)
+        })
+
+
+    </script>
+</body>
+</html>

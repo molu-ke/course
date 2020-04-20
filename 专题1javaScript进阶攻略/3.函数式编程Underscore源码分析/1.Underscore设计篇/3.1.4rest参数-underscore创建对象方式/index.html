@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>rest参数/underscore创建对象方式</title>
+</head>
+<body>
+    <script src="underscore.1.0.1.js"></script>
+    <script>
+
+        // ES6 引入rest参数(形式为...变量名)用于获取函数的多余参数
+        // function test(count,...rest){
+        //     console.log(count,rest)
+        // }
+        // test(1,2,3,4,5,6,7)
+
+        function test(count,reset){
+            console.log(count,rest)
+        }
+
+        // 包装器
+        var restTest = _.restArguments(test)
+        restTest(1,2,3,4)
+    </script>
+</body>
+</html>

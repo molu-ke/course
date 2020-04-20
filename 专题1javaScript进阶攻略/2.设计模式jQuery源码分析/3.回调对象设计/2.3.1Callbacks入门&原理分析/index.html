@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>callbacks入门与实践应用</title>
+</head>
+<body>
+    <script src="./Underscore.js"></script>
+    <script>
+       
+        // once 
+        var cb =  _.callbacks('once')
+        cb.add(function(){ console.log('once') })
+        cb.fire() // once
+        cb.fire()
+
+        // unique
+        var cb =  _.callbacks('unique')
+        function demo(){ console.log('unique') }
+        cb.add(demo,demo)
+        cb.fire() // unique
+
+
+        // stopOnFalse
+        var cb =  _.callbacks('stopOnFalse')
+        cb.add(
+            function(){ 
+                console.log('stopOnFalse 1')  
+                return false
+            },
+            function(){
+                console.log('stopOnFalse 2')  
+            }
+        )
+        cb.fire() // stopOnFalse 1
+
+
+        // memory
+        var cb =  _.callbacks('memory')
+        cb.add(function(){ console.log('memory 1') })
+        cb.add(function(){ console.log('memory 2') })
+        cb.fire() // memory 1
+        cb.add(function(){ console.log('memory 3') }) // memory 2
+
+    </script>
+</body>
+</html> 

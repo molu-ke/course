@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>偏函数(partial)-缓存(memoize)使用场景源码分析</title>
+</head>
+<body>
+    <script src="underscore.1.0.1.js"></script>
+    <script>
+
+        //  偏函数(partial)
+        // 局部应用一个函数填充在任意个数的参数，不改变其动态this值
+        // var add = function(a,b) {
+        //     return a + b
+        // }  
+        
+        // var partialAdd = _.partial(add,5)
+        // console.log(partialAdd(10))
+
+        // 偏函数有点像bind
+        // var BindAdd = add.bind(this,5)
+        // console.log(BindAdd(15))
+
+
+
+        // 缓存(memoize)
+        // 这个数列从第3项开始，每一项都等于前两项之和
+        var hasher = function() {
+            var n = arguments[0]
+            return n +'max'
+        }
+
+        var fibonacci = _.memoize(function(n) {
+            return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2)
+        },hasher)
+      
+        fibonacci(3)
+        console.log(fibonacci.cache)
+
+
+    </script>
+</body>
+</html>

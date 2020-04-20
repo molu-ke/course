@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>undefined的处理/函数式编程(回调)iteratee设计</title>
+</head>
+<body>
+    <script src="underscore.1.0.1.js"></script>
+    <script>
+        // 专门为对象服务的map方法
+        // 迭代函数改变对象的values值
+        // 返回对象副本
+        var obj = {name:'max'}
+
+        var arr = [1,2,3]
+        // var arr = {a:1,b:2}
+
+        var map = _.map(arr,function(value,index,object){
+            console.log(this,value,index,object)
+            return value*3
+        },obj)
+
+        console.log(map)
+    </script>
+</body>
+</html>

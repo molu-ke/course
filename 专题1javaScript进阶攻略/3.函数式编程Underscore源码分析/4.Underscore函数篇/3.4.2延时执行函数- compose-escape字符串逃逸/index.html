@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>延时执行函数- compose-escape字符串逃逸</title>
+</head>
+<body>
+    <fieldset>
+        <input type="text"  value="<a href='javascript:alert(1)'>max</a>" placeholder="说出你的想法" class='text'>
+        <div class='btn btn-inof' style='border-radius:0px'>Submit</div>
+        <span class='span' style='display:block;margin-top:10px'></span>
+    </fieldset>
+
+    <script src="underscore.1.0.1.js"></script>
+    <script>
+
+        // 延时执行函数
+        // _.delay(function(user,age){
+        //     console.log(user,age)
+        //},500,'max','30')
+
+        // compose
+        // function A(data) {
+        //     return data + 2
+        // }
+
+        // function D(data) {
+        //     return data - 2
+        // }
+
+        // function F(data) {
+        //     return data * 2
+        // }
+
+        // // 从右到左执行
+        // var ret = _.compose(A,D,F)
+        // console.log(ret(4))
+
+        // escape字符串逃逸  xss攻击  字符串的过滤   筛选
+        var btnElem = document.querySelector('.btn')
+        var spanElem = document.querySelector('.span')
+        btnElem.onclick = function(){
+            var textElem = document.querySelector('.text')
+            var value = textElem.value
+            value = _.escape(value)
+            spanElem.innerHTML = value
+        }
+
+
+    </script>
+</body>
+</html>

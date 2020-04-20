@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>underscore模板函数</title>
+</head>
+<body>
+    参考文档：https://zhuanlan.zhihu.com/p/92573380
+    <script>
+
+        //扩展功能
+        function extend(){
+            var target = arguments[0] || {},
+                i = 1,
+                len = arguments.length,
+                options
+            if(typeof target !== 'object'){
+                target = {}
+            }
+            for(;i < len;i++){
+                if((options= arguments[i]) != null){
+                    for( name in  options){
+                        target[name] = options[name]
+                    }
+                }
+            }
+
+            return target
+        }
+
+        // 模板引擎
+        function tmeplate(templateString,settings){
+
+            var RULES  = /<%= ([\s\S]+?)%>| <%-([\s\S]+?)%> | <%([\s\S]+?)%> /
+            var RULES = {
+                interpolate:/<%= ([\s\S]+?)%>/g,
+                escape:/<%-([\s\S]+?)%>/g,
+                expresstion:/<%([\s\S]+?)%>/g
+            }
+
+            // extend
+            settings = extend({},RULES,settings)
+
+            var matcher = new RegExp([
+                settings.interpolate.source,
+                settings.escape.source,
+                settings.expresstion.source
+            ].join("|"),'g')
+
+            templateString.replace(matcher,function(match,interpolate,escape,expresstion){
+                console.log(interpolate)
+                console.log(escape)
+                console.log(expresstion)
+            })
+        }
+        // tmeplate('hello <%=  message %>')
+        tmeplate('hello {{ message }}',{
+            interpolate:/\{\{([\s\S]+?)\}\}/g
+        })
+    </script>
+</body>
+</html>

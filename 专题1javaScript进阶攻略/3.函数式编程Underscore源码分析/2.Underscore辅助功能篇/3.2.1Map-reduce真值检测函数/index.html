@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Map-reduce真值检测函数</title>
+</head>
+<body>
+    <script src="underscore.1.0.1.js"></script>
+    <script>
+        // console.log( _.reduce([1,2,3,4,5,6],function(memo,value,index,obj) {
+        //     console.log(memo,value,index,obj)
+        //     return memo + value
+        // },0))
+
+
+        console.log( _.filter([12,50,2,4,6,13,12],function(elem) {
+            console.log(elem)
+            return elem < 10
+        }))
+    
+    </script>
+</body>
+</html>

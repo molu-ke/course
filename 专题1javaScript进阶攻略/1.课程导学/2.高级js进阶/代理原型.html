@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 代理原型
+        var methods = [
+            'push',
+            'pop',
+            'shift',
+            'unshift',
+            'splice',
+            'sort',
+            'reverse'
+        ]
+
+        // 创建一个对象，并把对象__proto__指向Array.prototype  {}.__proto__ = Array.prototype 
+        // var proxyProto = Object.create(Array.prototype)
+        var proxyProto = {}
+
+        methods.forEach(function(method){
+            proxyProto[method] = function(){
+
+                // 拦截
+                console.log('拦截成功',method)
+
+               var ret = Array.prototype[method].apply(this,arguments)               
+               return ret
+            }
+        })
+
+        console.log(proxyProto)
+
+        var arr = []
+
+        arr.__proto__ = proxyProto
+
+        arr.push(1)
+
+       console.log(arr)
+
+    </script>
+</body>
+</html>

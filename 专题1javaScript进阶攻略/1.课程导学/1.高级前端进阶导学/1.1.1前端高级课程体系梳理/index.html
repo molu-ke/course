@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>登录</title>
+  </head>
+
+  <body>
+	<div class='html'>
+
+
+  </div>
+  <script src="./jquery.min.js"></script>
+  <script>
+	
+    // 一、创建型设计模式——接口，创建的方式
+    // 工厂模式-定义一个方法，然后需要对象的时候，告诉他我们要什么，他就给我们什么
+    // 工厂模式应用场景一但我们需要创建大量的对象的时候
+    // 典型代表  jquery
+    function factory(ballname){
+      if( this instanceof factory ){
+        return this[ballname]();
+      }else{
+        return new factory()[ballname]
+      }
+    }
+
+    factory.prototype = {
+      tennis:function(){
+
+      }
+    }
+
+    // 建造者模式-创建一个高度定制化的对象
+    // 应用——工厂模式不关心创建过程，创建者模式关心创建过程
+    new Vue({
+      el:''
+    })
+
+    // 原型模式——prototype
+
+    // 单例模式——保证全局只有一个对象
+    var single=(function(){
+      function _a(){
+        this.a=123
+      }
+      var ob = new _a();
+      
+      return {
+        get:function(){
+          return obj
+        }
+      }
+    })()
+    single.get()
+
+    // 通过静态类实现
+    function a(){
+      function _class(){
+
+      }
+      if(a.instance){
+        return a.instance
+      }else{
+        var ob = new _class()
+        a.instance = ob
+        return ob
+      }
+    }
+    a.instance = null
+
+
+    // 二、结构型设计模式
+    // 外观模式——就像提供一个套餐，他需要什么，点着接口就好了
+    function person(){
+
+    }
+
+    person.prototype.run = function(){
+
+    }
+
+    person.prototype.jump=function(){
+
+    }
+
+    person.prototype.walk=function(){
+
+    }
+
+    person.prototype.sport=function(){
+      this.run()
+      this.jump()
+      this.walk()
+    }
+
+    person.prototype.sanbu=function(){
+      this.walk()
+      this.sing()
+    }
+
+    // 适配器模式——把不适合的东西进行适配
+    // 假设我们原来用A框架 --》 jquery 
+    // A框架
+    var A={
+      on:function(){
+
+      }
+    }
+    // 进行重写，匹配jq
+    A.on=(function(){
+      return $.on
+    })()
+    A.on()
+
+
+    // 装饰器模式——把修改变成扩张
+    var a ={
+      c:function(){conosle.log(1)}
+    }
+
+    function deco(fn1,fn2){
+      var _fn1 = fn1
+      var _fn2 = fn2
+      return function(){
+        _fn1()
+        _fn2()
+      }
+    }
+    a.c=deco(a.c,function(){console.log(2)})
+
+
+    // 享元模式——把一个对象分为内部方法和外部方法，内部数据和外部数据
+    // 作用——减少对象数量（代码块的数量）
+    var arr = ['f1','f2']
+    function file(file){
+  
+    }
+    fil.prototype.upload=function(file){
+
+    }
+    var fileob = new file()
+    for(var i=0;i<100;i++){
+      fileob.upload(arr[i])
+    }
+
+    // 观察者模式，两个模块之间无法直接沟通，或者不方便直接沟通
+    // 抽奖，每转一圈，速度减慢
+    var obs = {
+      // 监听队列
+      fallback:{
+
+      },
+      // 注册监听
+      on:function(name,fn){
+        this.fallback[name]=fn
+      },
+      //触发监听
+      fire:function(name){
+        this.fallback[name]()
+      },
+      // 删除监听
+      delete:function(name){
+        this.fallback[name]=null
+      }
+    }
+
+    // 状态模式 ——解决if else过多，将判断改为key value调用的方式
+    var a = {
+      statusArr:[],
+      on:function(state){
+        this.statusArr.push(state)
+      },
+      fire(){
+        // 触发statusArr所有动作
+        var self = this
+        this.statusArr.forEach( state =>{
+          self.actionArr[state]()
+        } )
+      },
+      actionArr:{
+        jump:function(){
+
+        },
+        run:function(){
+
+        },
+        fire:function(){
+
+        }
+      }
+    }
+    a.on('run').on('fire').fire()
+
+
+    // 策略模式——减去了状态管理的状态模式
+    function calc(type,a,b){
+      // if(type == 'add'){
+      //   return a+b
+      // }else if(type =='minus'){
+      //   return a-b
+      // }
+      var caler = {
+        add:function(){
+
+        },
+        minus:function(){
+
+        },
+        cheng:function(){
+          
+        }
+      }
+      return caler[type](a,b)
+    }
+
+    // 命令模式  让我们只关注命令，而不用关心别的
+    // 有一系列创建图片的需要，多少不定，排列方式不定（可能是上下，可能左右）
+    var cm = {
+      targe:'dom1',
+      data:[{pic:'xxxx.com',title:'adfaf'}],
+      type:'left'
+    }
+    function command(){
+      var _html=''
+      function create(style,arr){
+        arr.forEach(function(item,index){
+          _html+=`<div style='${style}'><img scr='i${item.pic}'></div>`
+        })
+      }
+      function display(dom){
+        var dom = document.getElementById(dom)
+        dom.innerHTML=_html
+      }
+      function _excute(command){
+        var calcer = {
+          left:'float:left',
+          top:""
+        }
+        create(calcer[command.typ],command.data)
+        display(command.target)
+      }
+      return {
+        excute:_excute
+      }
+    }
+
+    command().excute(cm)
+  </script>
+  </body>
+</html>

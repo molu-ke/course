@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script src="underscore.1.0.1.js"></script>
+    <script>
+        // console.log(_.unique([1,2,3,4,5,4,5,6]))
+        // console.log(_.unique([1,2,3,4,5,4,5,6,'a','A'],function(value){
+        //     return typeof value === 'string'?value.toLowerCase():value
+        // }))
+
+        // 实例对象
+        // _([1,2,3,4,5,4,5,6,'a','A']).unique(function(){})
+
+        console.log( _([1,2,3,4,5,4,5,6,'a','A']).chain().unique().map())
+        console.log( _([1,2,3,4,5,4,5,6,'a','A']).chain().unique().value())
+    
+    
+    </script>
+</body>
+</html>

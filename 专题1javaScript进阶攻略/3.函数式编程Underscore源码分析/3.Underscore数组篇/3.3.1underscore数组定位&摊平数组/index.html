@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>underscore数组定位&摊平数组</title>
+</head>
+<body>
+    <script src="underscore.1.0.1.js"></script>
+    <script>
+        // 深度展开
+        // console.log(_.flatten([1,[2,3,[10,9]]]))
+
+        // 浅度展开
+        // console.log(_.flatten([1,[2,3],[  4,[[4]] ]],true ))
+      
+        console.log(  _.initial([0,1,2,3,4,5],5) )
+        console.log(  _.ret([0,1,2,3,4,5],5) )
+
+    </script>
+</body>
+</html>

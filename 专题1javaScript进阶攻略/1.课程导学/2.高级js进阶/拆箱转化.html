@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>拆箱转化</title>
+</head>
+<body>
+    <script>
+        // 拆箱转化
+        // 先调用 valueOf()  ->   toString()   -> token 
+
+        [] + [] ;  //  "" + ""  =  ""
+        [] + {} ;  //  "" + "[object Object]"  = "[object Object]"
+        {} + [] ;  //  +'' = 0
+
+        ([][[]]+[])[+!![]]+([]+{})[!+[]+!![]] ;
+
+        ([][[]]+[])[+!![]]                        +        ([]+{})[!+[]+!![]] 
+        ([][[]]+[])            [+!![]]            +        ([]+{})                 [ !+[]  +  !![] ]   
+        ( [][[]]    + [] )     [ + !false ]       +        "[object Object]"       [ !0    +   1   ]
+        ( []['']    + '' )     [ + true ]         +        "[object Object]"       [ !false  +   1 ]
+        ( [][false] + '' )     [ 1 ]              +        "[object Object]"       [ true  +   1   ]
+        ( [][0]     + '' )     [ 1 ]              +        "[object Object]"       [   1   +   1   ]
+        undefined              [ 1 ]              +        "[object Object]"       [ 2 ]
+        n                                         +        b
+
+    </script>
+</body>
+</html>

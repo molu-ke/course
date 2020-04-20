@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>事件绑定-自定义设计&模拟事件</title>
+    <style>
+      #app {
+        color: blueviolet;
+        font-size:30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">test is text</div>
+    <script src="./jQuery.1.0.1.js"></script>
+    <!-- <script src="./jquery-2.0.3.js"></script> -->
+    <script>
+
+      // get  
+      // console.log($("#app").text()) // return  string
+      // set  
+      // console.log($("#app").text("this is max")) // return  Object
+
+      // get 
+      // console.log($("#app").css("color")) //  return  String
+      // console.log($("#app").css(["color",'font-size'])) // 批量  return  Object
+      // set 
+      // console.log($("#app").css("color","red")) //  return  Object
+       console.log($("#app").css({  //   批量 return  Object
+            color:'red',
+            fontSize:'27px'
+       }))
+
+
+    </script>
+  </body>
+</html>

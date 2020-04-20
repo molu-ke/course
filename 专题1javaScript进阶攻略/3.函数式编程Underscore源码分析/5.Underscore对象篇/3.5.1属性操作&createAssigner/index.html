@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>属性操作&createAssigner</title>
+</head>
+<body>
+    <script src="./underscore.js"></script>
+    <script>
+        
+        var obj = {
+            name:'凯',
+            game:'王者荣耀'
+        }
+        
+        Object.assign
+
+        // _.has   
+        console.log(  _.has(obj,'name') )
+
+        // _.keys
+        Object.prototype.age = 26  // Object.keys 不会将age遍历出来,但for in会
+        console.log(  _.keys(obj) )
+
+        //_.invert
+        console.log(  _.invert(obj) )
+
+
+    </script>
+</body>
+</html>

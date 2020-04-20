@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>indexOf lastIndexOf条件查询-背后索引查询器实现</title>
+</head>
+<body>
+    <script src="underscore.1.0.1.js"></script>
+    <script>
+
+        // 二分法
+        // var arr = [1,2,3,4,5,6,7,8]
+        // console.log(_.indexOf(arr,3,true))
+
+        // 查找NaN
+        var arr = [1,2,3,4,5,6,7,NaN]
+        console.log(_.indexOf(arr,NaN))
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<img />
+		<script src="jQuery.1.0.2.js"></script>
+		<script>
+			/*
+			var obj = {};
+			var callList = $.callbacks();  // 队列
+			callList.add(function(name){
+				console.log(this)
+			});
+			callList.add(function(name){
+				console.log(2+"name")
+			});
+			
+			callList.fireWith(obj);
+			*/
+			
+			
+			var wait = function(src) {
+				var der = jQuery.Deferred();
+				var img = document.getElementsByTagName("img")[0];
+
+				img.onload = function() {
+					der.resolve("加载成功1122333");    //权限 绑定状态   done  fail ...
+				}
+				img.src = src;
+				return der.promise(); //状态凝固   promise
+			}
+
+			/*
+			$.when(wait("index.jpg")).done(function(message){
+				console.log(message)     //this  === der
+			});
+			*/
+          
+		   //新的 Deferred 对象, 链式调用     
+		   wait("index.jpg").then(function(message){
+			   var der = jQuery.Deferred();
+			   der.resolve("又是一个Deferred对象");
+			   return der.promise();  //权限
+		   }).then(function(message){
+			   console.log(message)
+		   });
+		     
+			 
+		  /*
+		  then方法返回的是一个新的Deferred实例
+		  
+		  wait("index.jpg")   
+		  有了一个Deferred对象  =>der  
+		  状态   resolve
+		  队列中的callback呢？
+		  then(function(message){
+		  			   console.log(message)
+		  })
+		  
+		  
+		  
+		  返回的是一个新的Deferred实例
+		  */ 
+			 
+		  
+		  /*
+		  then方法的第一个参数是resolved状态的回调函数，第二个参数（可选）是rejected状态的回调函数。
+		  
+		  第一个then方法指定的回调函数，返回的是另一个Promise对象。这时，第二个then方法指定的回调函数，就会等待这个新的Promise对象状态发生变化。
+		  如果变为resolved，就调用第一个回调函数，如果状态变为rejected，就调用第二个回调函数。
+		  */
+		  
+		  //异步操作  开始  -  结束 -> 状态 成功  | 失败   做什么?   队列里面的callback
+		</script>
+	</body>
+</html>

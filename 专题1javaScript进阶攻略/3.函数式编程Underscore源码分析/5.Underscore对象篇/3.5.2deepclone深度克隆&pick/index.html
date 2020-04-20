@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>deepclone深度克隆&pick</title>
+</head>
+<body>
+    <script src="underscore.js"></script>
+    <script>
+        var ret = _.pick({
+            name:'moe',
+            age:50,
+            userId:'moel'
+        },
+        function(value,key,object){
+            return typeof value === 'number'
+        }
+        // "age","userId"
+        )
+
+        console.log(ret)
+    </script>
+</body>
+</html>

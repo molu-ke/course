@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>模块加载器</title>
+</head>
+<body>
+    <script>
+        
+        function func(require,exports,module) {
+            var b = require('b')
+            var c = require('c')
+        }
+
+        var starFunc = func.toString()
+
+        var Exp = /\brequire\((["'])(.+)\1\)/g
+
+        starFunc.replace(Exp,function(match,m1,m2){
+            console.log(match) // 捕获的依赖
+            console.log(m1) // 捕获的依赖
+            console.log(m2) // 捕获的依赖
+        })
+
+        // \b 边界符
+        // \1  反向引用
+
+    </script>
+</body>
+</html>

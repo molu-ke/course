@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div style='height:2000px'></div>
+    <script src="./underscore.js"></script>
+    <script>
+        /*
+            throttle节流函数
+            在一定时间内，调用了n次，只会执行一次
+            默认：立即执行callback  +   等待wait毫秒去调用callback
+            禁用：禁用立既执行 { leading:false }
+            禁用：禁用最后一次的执行 {trailing:false }
+
+            var remaning = wait - (now - lastTime) 
+            lastTime = now
+        */
+        // var throttled = _.throttle(function(){
+        //     console.log('hello word')
+        // },2000,{ 
+        //     leading:false,
+        //     trailing:false
+        // })
+
+        // window.onscroll = throttled
+
+        /*
+            debounce防抖函数
+            在一定时间内，调用了n次，只会根据最后一次调用重新计算时间
+            默认：禁用立即执行
+            immediate  true 立即执行    禁用立即执行
+
+            var last = _.now() - lastTime
+            lastTime = _.now()
+        */
+
+        var debounce = _.debounce(function(){
+            console.log('hello word')
+        },2000,false)
+
+        window.onscroll = debounce
+
+
+    </script>
+</body>
+</html>

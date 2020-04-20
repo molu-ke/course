@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>延时对象-Deferred概念&源码剖析</title>
+</head>
+<body>
+
+    <script src="./jQuery.1.0.2.js"></script>
+    <script>
+        
+        var wait = function(){
+            var der = $.Deferred() // 延迟对象
+            var test = function(){
+                console.log('老司机开车了') 
+                der.resolve('成功') // 成功
+                // der.reject('失败') // 失败
+
+                // 测试callbacks memory属性   立马会被执行
+                der.done(function(){console.log('--')})
+            }
+            setTimeout(test,2000)
+            console.log(der)
+            return der
+        }
+
+        // 延迟对象的状态  决定调用那个队列中的处理函数
+        $.when( wait() ).done( function(data){
+            console.log('执行'+data)
+        }).fail(function(data){
+            console.log('执行'+data)
+        })
+
+
+    </script>
+</body>
+</html>
