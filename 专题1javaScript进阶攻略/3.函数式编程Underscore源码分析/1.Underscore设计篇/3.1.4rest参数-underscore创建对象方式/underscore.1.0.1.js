@@ -122,13 +122,13 @@
 
     var Ctor = function(){}
 
-    // Object.create polyfill
+    // Object.create polyfill   为了兼容Object.create
     var baseCreate = function(prototype) {
         if(!_.isObject(prototype)) return {}
         if(Object.create) return Object.create(prototype)
         Ctor.prototype = prototype
         var result = new Ctor()
-        Ctor.prototype = null
+        Ctor.prototype = null // 清空
         return result
     }
 

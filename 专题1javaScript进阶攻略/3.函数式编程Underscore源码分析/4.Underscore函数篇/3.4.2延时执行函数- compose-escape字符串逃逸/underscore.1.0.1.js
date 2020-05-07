@@ -505,6 +505,7 @@
          // 拆分
          var source = Object.keys(escapeMap).join('|')
          var textExp = new RegExp(source,'g')
+         console.log(textExp)
 
          var ret = function(match) {
              return escapeMap[match]

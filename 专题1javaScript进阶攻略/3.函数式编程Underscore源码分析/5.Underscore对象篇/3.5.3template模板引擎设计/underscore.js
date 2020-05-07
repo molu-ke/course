@@ -18,11 +18,13 @@
             settings.expression.source
 
         ].join("|"),"g")
-        console.log(matcher,templateString)
+        console.log("matcher:",matcher,"templateString:",templateString)
 
         var index = 0,
             source = "_p+='"
         templateString.replace(matcher,function(match,interpolate,escape,expression,offset){
+            console.log(match,interpolate,escape,expression,offset)
+
             source += templateString.slice(index,offset).replace(/\n/g,function(){
                 return "\\n" // 在浏览器渲染的时候才进行换行，拼接的时候不换行
             })

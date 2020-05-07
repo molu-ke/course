@@ -2,6 +2,8 @@
     var _ = { }
 
 
+    var nativeKeys = Object.keys;
+
     _.has = function(obj,key) {
         return obj !== null && obj.hasOwnProperty(key)
     }
@@ -16,7 +18,7 @@
         if( !_.isObject(obj) ){
             return []
         }
-        if(Object.keys){
+        if(nativeKeys){
             return Object.keys(obj)
         }
         for (name in obj) {
@@ -63,6 +65,7 @@
     _.extend = createAssigner(_.allKeys)
 
     _.extendOwn = _.assign = createAssigner(_.keys)
+
 
     _.keys = function(obj) {
         if (!_.isObject(obj)) return [];

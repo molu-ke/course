@@ -283,7 +283,7 @@
     // 返回一个函数的副本
     _.partial = function(func) {
         // 提取参数
-        var args = [].slice.call(arguments,1)
+        var args = [].slice.call(arguments,1) // [ 5 ]
         var bound = function() {
             var index = 0
             var length = args.length

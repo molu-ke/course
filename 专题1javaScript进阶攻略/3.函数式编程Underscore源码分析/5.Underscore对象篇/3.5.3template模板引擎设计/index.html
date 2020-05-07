@@ -24,7 +24,7 @@
                 <%}})%>
         </ul>
     </script>
-    <script>
+    <!-- <script>
         var data = [{
             name:'max'
         },{
@@ -37,8 +37,8 @@
         var compiled = _.template(templateString)
         var renderString = compiled(data)
         document.querySelector('div').innerHTML = renderString
-    </script>
-    <!-- <script>
+    </script> -->
+    <script>
         /*
             underscore的template模板引擎是模板解释、数据绑定（预编译）是分开的，
         这样做的好处是数据发作变化时，不用重新进行字符串解释
@@ -50,14 +50,14 @@
         }
         
         // 截取处理    匹配的部分  替换
-        var compile = _.template('hello <%= name %> <%alert("123")%>') // 模板作用域怎么去绑定  用with + new Function()
+        var compile = _.template('hello <%= name %> <%alert("123")%>') // 模板作用域+数据 怎么去绑定  用with + new Function()
 
         // 数据绑定
-        console.log( compile(data) )
+        // console.log( compile(data) )
         
-        data.name = 'max'
-        console.log( compile(data) )
+        // data.name = 'max'
+        // console.log( compile(data) )
         
-    </script> -->
+    </script>
 </body>
 </html
