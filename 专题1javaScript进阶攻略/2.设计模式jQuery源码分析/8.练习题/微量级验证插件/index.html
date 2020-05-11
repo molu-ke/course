@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微量级验证插件</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" crossorigin="anonymous">
+     <style>
+         .context{
+             width:500px;
+             margin:0 auto;
+         }
+     </style>
+</head>
+<body>
+    
+    <!-- 
+        web开发中表单无处不在，从邮件订阅、登陆注册到多页填写信息提交，每次都需要花费大量时间和精力处理。
+    为了让客户端表单验证变得更简单，请基于jQuery 开发一个微量级验证插件（validate），为表单提供验证功能，并提交你的代码。
+    要求：
+        可以让用户去配置选项，拥有定制validate插件的能力，如：
+
+        $("form"). validate({
+            defaultEvent: "change"， //自定义校验触发事件
+        })
+    -->
+       
+
+
+    <div class="context">
+        <form>
+            <div class='form-group'>
+                <label>邮箱</label>
+                <input type="text" class='form-control' placeholder="请输入邮箱" 
+                 data-dv-email = true
+                 data-dv-email-error = "请输入合法邮箱"
+                >
+            </div>
+            <div class='form-group'>
+                <label for='exampleInputPassword1'>手机号码</label>
+                <input type="text" class='form-control' placeholder="请输入手机号码" data-dv-mobile = true>
+            </div>
+            <div class='form-group'>
+                <label for='exampleInputPassword1'>座机号码</label>
+                <input type="text" class='form-control' placeholder="请输入座机号码" data-dv-landline = true>
+            </div>
+            <div class='form-group'>
+                <label>密码</label>
+                <input type="text" class='form-control' placeholder="请输入密码" data-dv-password = true>
+            </div>
+            <button type='text' class='btn btn-success'>提交</button>
+        </form>
+    </div>
+    <script src="./jquery-1.7.2.js"></script>
+    <script src="./validate.js"></script>
+    <script>
+        $('form').validata({
+            initEvent:'blur',
+            // sign:'dv'
+        })
+
+        // 弹性扩展
+        $.fn.validata.expand({
+            password:function(){
+                return  /^[1-9]\d{4,9}$/.test(this.val())
+
+            }
+        })
+    </script>
+</body>
+</html>

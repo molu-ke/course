@@ -18,11 +18,12 @@
             settings.expression.source
 
         ].join("|"),"g")
-        console.log("matcher:",matcher,"templateString:",templateString)
+        // console.log("matcher:",matcher,"templateString:",templateString)
 
         var index = 0,
             source = "_p+='"
         templateString.replace(matcher,function(match,interpolate,escape,expression,offset){
+            console.log("------------")
             console.log(match,interpolate,escape,expression,offset)
 
             source += templateString.slice(index,offset).replace(/\n/g,function(){
@@ -32,13 +33,15 @@
             // console.log(interpolate)
             // 字符串的拼接
             if(interpolate){
-                source+="'+\n((_t=("+interpolate+")) == null ? '':_t)+\n'"
+                source+="'+\n ( ( _t= ("+interpolate+") ) == null ? '' : _t ) + \n'"
             } else if(escape){
                 
             } else if(expression){
                 source+="';\n"+expression+"\n_p+='"
             }
+            console.log(source)
         })
+        console.log("------------")
         source+="';"
         source = "with(obj){\n"+source+"}"
         source = "var _t,_p='';"+source+"return _p;\n"
