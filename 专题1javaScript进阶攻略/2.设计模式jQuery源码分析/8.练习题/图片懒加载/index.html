@@ -4,19 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>图片懒加载</title>
+    <style>
+        #example{
+            display:inline-block;
+            width:200px;
+            height:200px;
+            background:greenyellow;
+        }
+
+    </style>
 </head>
 <body>
     <!-- 
         图片懒加载（LazyLoad）一直是前端的优化方案之一。
             其核心思想是：先将img标签中的src链接设为同一张图片，真正的图片地址存储在img标签的自定义属性中。当js监听到该图片元素进入可视窗口时，
         将自定义属性中的地址存储到src属性中。
-        请基于jQuery开发一个懒加载插件
+        请基于jQuery开发一个懒加载插件   
+        IntersectionObserver
+        http://www.ruanyifeng.com/blog/2016/11/intersectionobserver_api.html
     -->
-    <script src="../微量级验证插件/jquery-1.7.2.js"></script>
-    <script src="./lazyLoad.js"></script>
+    <div style="width:100%;height:1000px"></div>
+    <div id='example'></div>
+    <div style="width:100%;height:1000px"></div>
+
+    <script src="./lozad.js"></script>
     <script>
+        var io = new IntersectionObserver(function(entries){
+            console.log(entries);
+        });
 
+        // 开始观察
+        io.observe(document.getElementById('example'));
 
+        var observe = lozad('.lozad',{
+            threshold:0.1,
+            load:function(el) {
+                el.src = el.getAttribute('data-src')
+                // el.onload = function(){
+
+                // }
+            }
+        })
+        observe.observe()
     </script>
 </body>
 </html>
