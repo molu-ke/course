@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>AMD</title>
+</head>
+<body>
+    
+    <div id='test'></div>
+
+    <script type='text/javascript' src='require.js'></script>
+    <script type="text/javascript">
+        require.config({
+            paths:{
+                'a':'./a',
+                'b':'./b'
+            }
+        })
+
+        require(['a','b'],function(a,b){
+            console.log(a)
+            console.log(b)
+        })
+
+    </script>
+</body>
+</html>

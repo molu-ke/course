@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CMD</title>
+</head>
+
+<body>
+
+    <div id='test'></div>
+
+    模块部分：每个模块创建都先初始化数据，存储在缓存对象中
+        数据初始化：加载器中设计了一个名为module的构造函数，每个模块都是此构造函数实例对象
+        模块存储：加载器中设计了一个名为cache缓存对象，每个文件（模块）都会存储在cache对象中
+                 具体存储方式：{当前模块绝对路径：new Module() }
+                 注意：当前模块的绝对路径是通过资源部分，资源定位方法实现的
+    资源部分；资源定位依赖管理是加载器设计两大核心
+        资源定位：加载器中设计了一个resolve()的方法把模块名解析成绝对路径格式
+                    模块名的获取：
+                        startUp.use(['a.js','b.js')
+                        startUp.use()加载器启动方法，启动时会去调用传入数组列表中的模块
+        动态加载script文件：通过加载器resolve()方法把模块名解析成绝对路径格式
+                         动态创建script document.create('script') src指向当前模块绝对路径地址
+                         加载文件同时，模块加载器解析当前模块所依赖的模块以数组的形式存储
+
+        依赖管理：已知当前模块在cache中的形态，{'当前模块绝对路径':new Module()}
+                换算：
+                    {'当前模块绝对路径':{url:"当前模块绝对路径",deps:[]} }
+                    deps存储当前模块的依赖列表，依赖列表通过动态加载script文件正则解析获取
+                重点：解析依赖 -》 获取依赖模块绝对路径地址 -》 动态加载 -》 提取依赖 -》解析依赖
+                    递归方式加载所有模块，直至模块全部加载完毕
+
+    <script type='text/javascript' src='sea.js'></script>
+    <script type='text/javascript'>
+
+        seajs.config({
+            paths: {
+                'a': './a',
+                'b': './b'
+            }
+        })
+
+        seajs.use(['a', 'b'], function (a, b) {
+            console.log(a)
+            console.log(b)
+        })
+
+    </script>
+</body>
+
+</html>
