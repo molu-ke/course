@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4.2.1 Module构造器设计 模块数据初始化</title>
+</head>
+<body>
+    <script src='startUp.js'></script>
+    <script>
+        startUp.use(['a.js','b.js'],function(){
+            console.log('startUp.....')
+        })
+    </script>
+</body>
+</html>
