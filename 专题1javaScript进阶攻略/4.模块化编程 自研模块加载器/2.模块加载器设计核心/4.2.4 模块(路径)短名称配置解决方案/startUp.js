@@ -4,7 +4,7 @@
     }
     var data = {};
     var cache = {};
-    var anonymousMeta = '';
+    var anonymousMeta = {};
     // 模块的生命周期
     var status = {
         FETCHED:1, // 正在获取当前模块获取uri
@@ -78,10 +78,10 @@
     // 生成绝对路径  parent child
     startUp.resolve = function(child,parent) {
         if(!child) return "";
-        child = parseAlias(child); // 检测是否有别名
+        child = parseAlias(child); // 检测是否有别名  a === common/js/a   b === common/js/b
         child = parsePaths(child); // 检测是否有路径别名  依赖模块中引包的模块路径地址 require("app/c")
-        child = normalize(child); //检测是否添加后缀
-        return addBase(child,parent); // 添加根目录
+        child = normalize(child); //检测是否添加后缀 a === common/js/a.js   b === common/js/b.js
+        return addBase(child,parent); // 添加根目录 项目的绝对路径为基准  data.cwd + common/js/a.js
     }
 
     startUp.request = function(url,callback) {
@@ -97,12 +97,12 @@
 
     // 构造函数  模块初始化数据
     function Module(uri,deps) {
-        this.uri = uri;
+        this.uri = uri; // 资源地址
         this.deps = deps || []; // [a.js , b.js] 依赖项
-        this.exports = null;
-        this.status = 0;
-        this._waitings = {};
-        this._remain = 0;
+        this.exports = null; // 接口对象
+        this.status = 0; // 状态码
+        this._waitings = {}; // 谁依赖于我
+        this._remain = 0; // 还有多少个依赖项未加载
     }
 
     // 分析主干(左子树 | 右子树) 上的依赖项
@@ -284,13 +284,22 @@
         return _cid ++
     };
 
-    data.preload = [];
+
     // 获取当前项目文档的URL
     data.cwd = document.URL.match(/[^?]*\//)[0];
     Module.preload = function(callback) {
-        var length = data.preload.length;
-        if(!length) callback();
+        var preloadMods = data.preload || [],
+            length = data.preload.length;
         // length !== 0 先加载预先设定模块
+        if( length) {
+            Module.use(preloadMods,function() {
+                preloadMods.splice(0,length); // 置空数组
+                callback();
+
+            }, data.cwd + '_preload' + cid() ); //虚拟的根目录
+        } else {
+            callback();
+        }
     }
 
     startUp.use = function(list,callback) {
@@ -298,6 +307,13 @@
         Module.preload(function() {
             Module.use(list,callback,data.cwd + "_use_" + cid() ); //虚拟的根目录
         })
+    }
+
+    startUp.config = function(options){
+        for( var key in options ){
+            data[key] = options[key]
+        }
+        
     }
 
     var REQUIRE_RE =  /\brequire\s*\(\s*(["'])(.+?)\1\s*\)/g

@@ -8,9 +8,25 @@
 <body>
     <script src='startUp.js'></script>
     <script>
-        startUp.use(['./a.js'],function(a,b){
-            // console.log(a,b)
-            // console.log('startUp.....')
+
+        startUp.config({
+            alias: {
+                'a': 'common/js/a',
+                'b': 'common/js/b',
+            },
+            preload: [
+                'es5-safe',
+                'json'
+            ]
+        });
+
+        // 有预先要加载的模块  先加载
+        // Module.use( ['es5-safe','json'] , function(){} )
+
+        // 启动模块加载器  a.js   b.js
+        startUp.use(['a','b'],function(a,b){
+            console.log(a,b)
+            console.log('startUp.....')
         })
     </script>
 </body>
