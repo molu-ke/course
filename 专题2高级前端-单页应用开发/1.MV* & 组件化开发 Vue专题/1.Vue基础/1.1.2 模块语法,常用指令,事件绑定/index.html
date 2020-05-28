@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        [v-cloak]{
+            display:none
+        }
+    </style>
+</head>
+<body>
+    <div id='app'>
+        <!-- 解决初始化慢导致页面闪动的最佳实践，它会在vue实例结束编译时从绑定的html元素上移除
+        在简单项目中，使用 v-cloak 指令是解决屏幕闪动的好方法。但在大型、工程化的项目中
+        （webpack、vue-router）只有一个空的 div 元素，元素中的内容是通过路由挂载来实现的，
+        这时我们就不需要用到 v-cloak -->
+        <div v-cloak>{{title}}</div>
+        <!-- 一次性绑定 -->
+        <div v-once>{{title}}</div>
+        <div>{{title}}</div>
+        
+        <!-- 
+        修饰符
+        1.事件修饰符
+            .stop
+            .prevent
+            .capture
+            .self
+            .once
+            .passive
+        2.系统修饰符
+            .ctrl
+            .alt
+            .shift
+            .meta
+            .left
+            .right
+            .middle
+        3.按键修饰符
+            .enter
+            .tab
+            .delete (捕获“删除”和“退格”键)
+            .esc
+            .space
+            .up
+            .down
+            .left
+            .right
+        -->
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script>
+         const app = new Vue({
+            el:'#app',
+            data:{
+                title:'我相信我的未来不是梦'
+            }
+        })
+        app.$data.title = "我相信每一分钟"
+
+    </script>
+</body>
+</html>
