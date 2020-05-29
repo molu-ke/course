@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+
+        <ul>
+            <li v-for="item in items" :key="item.label">{{item.label}}</li>
+        </ul>
+        <button @click="addList">修改数组</button>
+
+        列表渲染    
+            维护状态( :key )
+                为了给vue一个提示，以便它能跟踪每个节点的身份，从而重用和重新排序现有元素，你需要为每项提供一个唯一key属性
+                跟虚拟DOM diff算法相关
+            
+            
+
+    </div>
+    <script>
+         const app = new Vue({
+            el:'#app',
+            data:{
+                items:[
+                    { label:'vue' },
+                    { label:'react' },
+                    { label:'jquery' },
+                ]
+            },
+            methods:{
+                addList(){
+                    console.log(123)
+                    this.items.unshift({ label:'node' })
+                }
+            }
+        })
+
+
+    </script>
+</body>
+</html>

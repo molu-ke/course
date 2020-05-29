@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+</head>
+<body>
+    <div id="app">
+        <h3>computed属性</h3>
+        <p>苹果手机单价： <input type="text" v-model="pricel1"> 数量： <input type="text" v-model="number1"> </p>
+        <p>华为手机单价： <input type="text" v-model="pricel2"> 数量： <input type="text" v-model="number2"> </p>
+        <p>直接计算: {{pricel1*number1 + pricel2*number2}} </p>
+        <!-- 官方建议使用 -->
+        <p>computed计算: {{totalPricel}} </p>  
+        <p>methods计算: {{calcTotalPricel()}} </p>        
+    </div>
+    <script>
+        const app = new Vue({
+            el:'#app',
+            data:{
+                pricel1:20,
+                pricel2:30,
+                number1:10,
+                number2:10,
+                watchEg:{
+                    test:''
+                }
+            },
+            computed:{
+                totalPricel:function(){
+                    return this.pricel1*this.number1 + this.pricel2*this.number2
+                }
+            },
+            methods:{
+                calcTotalPricel(){
+                    return this.pricel1*this.number1 + this.pricel2*this.number2
+                }
+            },
+            watch:{
+                watchEg:{
+                    handler:function(newVal,oldVal){
+                        console.log(newVal,oldVal)
+                    },
+                    deep:true, // 深度监听
+                    immediate:true // 是否以初始值来执行监听
+                }
+            }
+        })
+
+    </script>
+</body>
+</html>
