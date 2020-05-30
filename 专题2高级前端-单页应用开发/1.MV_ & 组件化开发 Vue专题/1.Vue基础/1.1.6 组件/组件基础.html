@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>组件基础</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <my-component></my-component>
+      <com-a></com-a>
+      <!-- 自定义v-model -->
+      <custom-v-model v-model='write' :id="id"></custom-v-model>
+    </div>
+    <script>
+      // 全局组件
+      Vue.component("my-component", { template: "<div>这是全局组件</div>" });
+      Vue.component('custom-v-model',{
+        props:{
+            id:{
+                type:Object,
+                default:() => {}
+            },
+            value:{
+                type:String,
+                default:'',
+                required:true,
+            },
+        },
+        template:`<div>
+                    {{value}}
+                    <button @click="modify">v-model</button>
+                    {{id.number}}
+                  </div>`,
+        methods:{
+            modify(){
+                this.$emit('input','我认真的过每一分钟')
+            }
+        }
+      })
+      // 局部组件
+      const app = new Vue({
+        el: "#app",
+        data:{
+            write:'我相信我的未来不是梦',
+            id:{number:21}
+        },
+        components: {
+          "com-a": {
+            template: "<div>这是局部组件</div>",
+            data: function () {
+              return {};
+            }
+          },
+        },
+        watch:{
+            write(newVale,oldVale){
+                console.log(newVale,oldVale)
+            }
+        }
+      });
+    </script>
+  </body>
+</html>

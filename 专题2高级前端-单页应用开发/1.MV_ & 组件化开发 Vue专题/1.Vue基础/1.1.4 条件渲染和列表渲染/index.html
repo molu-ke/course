@@ -14,12 +14,18 @@
         </ul>
         <button @click="addList">修改数组</button>
 
-        列表渲染    
-            维护状态( :key )
-                为了给vue一个提示，以便它能跟踪每个节点的身份，从而重用和重新排序现有元素，你需要为每项提供一个唯一key属性
-                跟虚拟DOM diff算法相关
-            
-            
+        <h4>数组更新检测-不能监听的情况</h4>
+
+        <ul>
+            <li v-for="(item,index) in arr" :key="index">{{item}}</li>
+        </ul>
+
+        <button @click="indexesEvent">利用索引直接设置一个数组项</button>
+        <button @click="lengthEvent">修改数组长度</button>
+
+        
+
+
 
     </div>
     <script>
@@ -30,13 +36,22 @@
                     { label:'vue' },
                     { label:'react' },
                     { label:'jquery' },
-                ]
+                ],
+                arr:['a','b','c','d']
             },
             methods:{
                 addList(){
-                    console.log(123)
                     this.items.unshift({ label:'node' })
-                }
+                },
+                indexesEvent(){
+                    this.arr[0] = '修改';
+                    console.log(this.arr);
+                },
+                lengthEvent(){
+                    this.arr.length = 2;
+                    console.log(this.arr);
+                },
+
             }
         })
 

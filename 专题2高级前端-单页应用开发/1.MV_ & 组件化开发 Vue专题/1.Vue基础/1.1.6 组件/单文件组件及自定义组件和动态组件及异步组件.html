@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单文件组件及自定义组件和动态组件及异步组件</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <slot-component>
+            <p>这是父组件的slot</p>
+            <p slot="footer">这是父组件的具名slot</p>
+        </slot-component>
+        <scope-component>
+            <template scope="props">{{props.msg}}</template>>
+        </scope-component>
+    </div>  
+    <script>
+        Vue.component('slot-component',{
+            template:`
+                <div>
+                    <h3>单个slot</h3>
+                    <slot><p>如果父组件没插入内容，访内容会默认显示(相当于默认值)</p></slot>
+                    <h3>具名slot</h3>
+                    <slot name='footer'><p>如果父组件没插入内容，访内容会默认显示(相当于默认值)</p></slot>
+                </div>`
+        })
+        Vue.component('scope-component',{
+            template:`
+                <div>
+                    <h3>作用域slot</h3>
+                    <slot msg='子组件的数据'><p>如果父组件没插入内容，访内容会默认显示(相当于默认值)</p></slot>
+                </div>`
+        })
+        const app = new Vue({
+            el:'#app',
+            data:{
+               
+            },
+        })
+    </script>
+</body>
+</html>
