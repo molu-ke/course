@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>异步组件</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <component :is="currentView"></component>
+        <button @click="changeView('A')">切换到A</button>
+        <button @click="changeView('B')">切换到B</button>
+        <button @click="changeView('C')">切换到C</button>
+    </div>
+    <script>
+
+        new Vue({
+            el:'#app',
+            data:{
+                currentView:'comA'
+            },
+            components: {
+                comA:{ template:'<div>我是A</div>' },
+                comB:{ template:'<div>我是B</div>' },
+                comC:{ template:'<div>我是C</div>' }
+            },
+            methods:{
+                changeView(com){
+                    this.currentView = 'com'+com
+                }
+            }
+        })
+
+    </script>
+</body>
+</html>
