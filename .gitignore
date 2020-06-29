@@ -1,8 +1,6 @@
 .DS_Store
 node_modules/
 /dist/
-/xySchool/
-/school/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
