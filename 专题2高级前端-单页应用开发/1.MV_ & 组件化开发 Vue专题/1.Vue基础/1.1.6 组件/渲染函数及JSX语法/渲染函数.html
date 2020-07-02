@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>渲染函数</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        Vue.component('heading-line',{
+            render:function(createElement){
+                return createElement(
+                    'h' + this.level,
+                    this.$slots.default
+                )
+            },
+            props:{
+                level:{
+                    type:Number,
+                    required:true
+                }
+            }
+        })
+
+        Vue.component('my-render',{
+            render:function(createElement){
+             return createElement(
+                 // HTML 标签名
+                'div',
+                // attribute
+                { 
+                    style: {
+                        color: 'red',
+                        fontSize: '17px'
+                    },
+                    class:{
+                        foo:true,
+                        bar: false
+                    }
+                } ,
+                // 子级虚拟节点
+                [
+                    '渲染函数', 
+                    createElement('div','直接写入标签'), 
+                    createElement('heading-line',{  
+                        props:{
+                            level:2
+                        },
+                        template:'直接引入组件'
+                    })
+                ],
+                
+
+             )
+            }
+        })
+
+        new Vue({
+            el:"#app",
+            template:`<div>
+                        <heading-line :level='2'>我是标题</heading-line>
+                        <my-render></my-render>
+                      </div>`
+        })
+
+    </script>
+</body>
+</html>

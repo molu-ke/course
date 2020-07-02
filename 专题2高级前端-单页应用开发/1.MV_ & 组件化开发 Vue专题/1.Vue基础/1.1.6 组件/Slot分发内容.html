@@ -10,10 +10,13 @@
     <div id="app">
         <slot-component>
             <p>这是父组件的slot</p>
-            <p slot="footer">这是父组件的具名slot</p>
+			<!-- v-slot只能用于template中 -->
+			<!-- 2.6.0 起被废弃   <p slot="footer">这是父组件的具名slot</p> -->
+			<template v-slot:footer>这是父组件的具名slot</template>
         </slot-component>
         <scope-component>
-            <template scope="props">{{props.msg}}</template>>
+			<!-- 2.6.0 起被废弃   <template slot="default" slot-scope="props">{{props.msg}}</template>> -->
+            <template v-slot:default="props">{{props.msg}}</template>
         </scope-component>
     </div>  
     <script>
