@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue的生命周期</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+</head>
+<body>
+    <div id="app">
+        {{msg}}
+        <button @click='updata'>更新数据</button>
+    </div>
+    <script>
+        const app = new Vue({
+            el:'#app',
+            data:{
+               msg:'hello world'
+            },
+            methods:{
+                updata(){
+                    this.msg = "我相信";
+                }
+            },
+            beforeCreate(){
+                console.log('beforeCreate',this.$el,'------','data',this.msg)
+            },
+            created(){
+                console.log('create',this.$el,'------','data',this.msg)
+            },
+            beforeMount(){
+                console.log('beforeMount',this.$el,'------','data',this.msg)
+            },
+            mounted(){
+                console.log('mounted',this.$el,'------','data',this.msg)
+            },
+            beforeDestroy(){
+                console.log('beforeDestroy',this.$el,'------','data',this.msg)
+            },
+            destroyed(){
+                console.log('destroyed',this.$el,'------','data',this.msg)
+            },
+            beforeUpdate(){
+                console.log('beforeUpdate',this.$el,'------','data',this.msg)
+            },
+            updated(){
+                console.log('updated',this.$el,'------','data',this.msg)
+            },
+            
+        })
+
+    </script>
+</body>
+</html>
