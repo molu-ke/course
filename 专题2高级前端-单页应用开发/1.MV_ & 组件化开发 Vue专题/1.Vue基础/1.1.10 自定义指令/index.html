@@ -1,26 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>自定义指令</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
-</head>
-<body>
+    <script src='./time.js'></script>
+  </head>
+  <body>
     <div id="app">
+      <div>
+            使用场景： 当你需要对普通 DOM 元素进行底层操作，这时候就会用到自定义指令
+            官网文档：<a href="https://cn.vuejs.org/v2/guide/custom-directive.html" target="_blank">自定义指令</a>
+      </div>
 
+      <!-- 全局指令 -->
+      <!-- <div v-click-outside="clickOutSide">clickOutSide</div> -->
+
+      <!-- 局部指令 -->
+      <!-- <div v-jspang:foo="color">{{num}}</div>
+      <button @click="add">add</button> -->
+
+      <!-- <div v-abbreviation="color">函数简写</div> -->
+
+      <div v-time='timeNow'></div>
     </div>
     <script>
-        const app = new Vue({
-            el:'#app',
-            data:{
-         
-            },
-            methods:{
-               
-            }            
-        })
+      // 全局指令
+      Vue.directive("click-outside", {
+        bind: function (el, binding, vnode) {
+          el.clickOutsideEvent = function (event) {
+            if (!(el == event.target || el.contains(event.target))) {
+              vnode.context[binding.expression](event);
+            }
+          };
+          document.body.addEventListener("click", el.clickOutsideEvent);
+        },
+        unbind: function (el) {
+          document.body.removeEventListener("click", el.clickOutsideEvent);
+        },
+      });
 
+      const app = new Vue({
+        el: "#app",
+        data: {
+            num: 0,
+            color: "#000",
+            timeNow:new Date().getTime()
+            // timeNow:new Date().getTime() - 3600*1000
+        },
+        // 局部指令
+        directives: {
+          jspang: {
+            bind: function (el, binding, vnode, oldVnode) {
+              console.log(el, binding, vnode);
+              el.style = "color:" + binding.value;
+              //被绑定
+              console.log("1 - bind");
+            },
+            inserted: function () {
+              //绑定到父节点
+              console.log("2 - inserted");
+            },
+            update: function () {
+              //组件更新
+              console.log("3 - update");
+            },
+            componentUpdated: function () {
+              //组件更新完成
+              console.log("4 - componentUpdated");
+            },
+            unbind: function () {
+              //解绑
+              console.log("5 - unbind");
+            },
+          },
+          // 函数简写 bind 和 update 时触发相同行为，而不关心其它的钩子
+          abbreviation(el, binding, vnode, oldVnode) {
+            console.log("bind - update");
+            el.style.backgroundColor = binding.value;
+          },
+          time:{
+              bind:function(el,binding){
+                  el.innerHTML = Time.getFormatTime(binding.value);
+                  el.timeOut = setInterval(function(){
+                      el.innerHTML = Time.getFormatTime(binding.value);
+                  },1000 * 60)
+              },
+              unbind:function(el){
+                clearInterval(el.timeOut);
+                delete el.timeOut;
+              }
+          }
+
+
+        },
+
+        methods: {
+          add() {
+            this.num++;
+          },
+          clickOutSide() {
+            console.log('触发了')
+          }
+        },
+      });
     </script>
-</body>
+  </body>
 </html>
