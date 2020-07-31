@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>父子组件通信</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <props-emit></props-emit>
+    </div>
+    <script>
+
+      Vue.component("props-emit", { 
+        template: `<div>
+                      <h3>1、使用props和$emit父子组件相互通信</h3>
+                  </div>`
+      });
+
+      const app = new Vue({
+        el: "#app",
+        data:{
+            write:'我相信我的未来不是梦',
+            id:{number:21}
+        }
+      });
+    </script>
+  </body>
+</html>
