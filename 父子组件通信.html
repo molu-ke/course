@@ -8,21 +8,66 @@
   </head>
   <body>
     <div id="app">
-      <props-emit></props-emit>
+      <h3>1、使用props和$emit父子组件相互通信</h3>
+      <props-emit :title="title" @editevent="editTitle"></props-emit>
+      <h3>6、V-model 和 sync双向绑定</h3>
+      <vmodel-async v-model="name" :call.sync="call"></vmodel-async>
     </div>
     <script>
 
       Vue.component("props-emit", { 
         template: `<div>
-                      <h3>1、使用props和$emit父子组件相互通信</h3>
-                  </div>`
-      });
+                      <span>{{title}}</span>
+                      <button @click="editEvent">修改</button>
+                  </div>`,
+        props:{
+          title:{
+            type:String,
+            default:'默认值'
+          }
+        },
+        methods:{
+          editEvent(){
+            this.$emit('editevent','我认真地过每一分钟');
+          }
+        }
+      })
+
+      Vue.component('vmodel-async',{
+        template: `<div>
+                      <span>{{value}} -- {{call}}</span>
+                      <button @click="editEvent">修改</button>
+                  </div>`,
+        props:{
+          value:{
+            type:String,
+            default:''
+          },
+          call:{
+            type:String,
+            default:''
+          },
+
+        },
+        methods:{
+          editEvent(){
+            this.$emit('input','镜')
+            this.$emit('update:call','破镜之刃');
+          }
+        }
+      })
 
       const app = new Vue({
         el: "#app",
         data:{
-            write:'我相信我的未来不是梦',
-            id:{number:21}
+          title:'我相信我的未来不是梦',
+          name:'铠',
+          call:'破灭刀峰'
+        },
+        methods:{
+          editTitle(e){
+            this.title = e;
+          }
         }
       });
     </script>
