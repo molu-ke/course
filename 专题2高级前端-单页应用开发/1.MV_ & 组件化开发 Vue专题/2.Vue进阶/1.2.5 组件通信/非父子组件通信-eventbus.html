@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>非父子组件通信-eventbus</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <com-a></com-a>
+      <com-b></com-b>
+      <com-c></com-c>
+    </div>
+    <template id="coma">
+        <div>
+          <h3>A组件：{{msg}}</h3>
+          <button @click="sendToC">A将msg发送给C组件</button>
+        </div>
+    </template>
+    <template id="comb">
+      <div>
+        <h3>B组件：{{msg}}</h3>
+        <button @click="sendToC">B将msg发送给C组件</button>
+      </div>
+    </template>
+    <template id="comc">
+      <div>
+        <h3>C组件：{{msg}}</h3>
+      </div>
+    </template>
+    <script>
+
+    var Event = new Vue();
+    var A = {
+      template:"#coma",
+      data() {
+        return {
+          msg:'A传递组C的msg'
+        }
+      },
+      methods:{
+        sendToC(){
+          Event.$emit('data-a',this.msg)
+        }
+      }
+    }
+    var B = {
+      template:"#comb",
+      data() {
+        return {
+          msg:'B传递组C的msg'
+        }
+      },
+      methods:{
+        sendToC(){
+          Event.$emit('data-b',this.msg)
+        }
+      }
+    }
+    var C = {
+      template:"#comc",
+      data() {
+        return {
+          msg:''
+        }
+      },
+      mounted() {
+        Event.$on('data-a',msg => {
+          this.msg = msg
+        })
+        Event.$on('data-b',msg => {
+          this.msg = msg
+        })
+      }
+    }
+
+
+      const app = new Vue({
+        el: "#app",
+        components: {
+          'com-a':A,
+          'com-b':B,
+          'com-c':C,
+        }
+      });
+    </script>
+  </body>
+</html>

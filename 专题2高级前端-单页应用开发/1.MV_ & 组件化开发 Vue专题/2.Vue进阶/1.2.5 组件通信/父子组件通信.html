@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>父子组件通信</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <h3>1、使用props和$emit父子组件相互通信</h3>
+      <props-emit :title="title" @editevent="editTitle"></props-emit>
+      <h3>2、父组件$children操作子组件</h3>
+      <children></children>
+      <h3>3、父组件$refs操作子组件</h3>
+      <children ref="childrenRef"></children>
+      <h3>4、子组件$parent访问父组件</h3>
+      <parent></parent>
+      <h3>5、对象传参，不改变引用</h3>
+       父组件中 {{obj}}
+      <objectprops :obj="obj"></objectprops>
+      <h3>6、V-model 和 sync双向绑定</h3>
+      <vmodel-async v-model="name" :call.sync="call"></vmodel-async>
+    </div>
+    <script>
+
+      Vue.component("props-emit", {
+        template: `<div>
+                      <span>{{title}}</span>
+                      <button @click="editEvent">修改</button>
+                  </div>`,
+        props: {
+          title: {
+            type: String,
+            default: "默认值",
+          },
+        },
+        methods: {
+          editEvent() {
+            this.$emit("editevent", "我认真地过每一分钟");
+          },
+        },
+      });
+
+      Vue.component("vmodel-async", {
+        template: `<div>
+                      <span>{{value}} -- {{call}}</span>
+                      <button @click="editEvent">修改</button>
+                  </div>`,
+        props: {
+          value: {
+            type: String,
+            default: "",
+          },
+          call: {
+            type: String,
+            default: "",
+          },
+        },
+        methods: {
+          editEvent() {
+            this.$emit("input", "镜");
+            this.$emit("update:call", "破镜之刃");
+          },
+        },
+      });
+
+      Vue.component("children",{
+        template:`<div></div>`,
+        data(){
+          return {
+            childrenData:'子组件'
+          }
+        },
+        methods:{
+          childrenLog(){
+            return '子组件打印输出'
+          }
+        }
+      })
+
+      Vue.component("parent",{
+        template:`<div></div>`,
+        mounted(){
+          console.log('$parent',this.$parent)
+        }
+      })
+
+      Vue.component("objectprops",{
+        template:`<div>
+                    子组件中 {{obj}}
+                    <button @click="editEvent">修改</button>
+                  </div>`,
+        props:['obj'],
+        methods:{
+          editEvent(){
+            this.obj.id = 2
+          }
+        }
+      })
+
+
+
+      const app = new Vue({
+        el: "#app",
+        data: {
+          title: "我相信我的未来不是梦",
+          name: "铠",
+          call: "破灭刀峰",
+          obj:{
+            id:1
+          }
+        },
+        mounted(){
+          console.log('$children：',this.$children[1].childrenData)
+          console.log('$children：',this.$children[1].childrenLog())
+          console.log('$refs：',this.$refs.childrenRef.childrenData)
+          console.log('$refs：',this.$refs.childrenRef.childrenLog())
+
+        },
+        methods: {
+          editTitle(e) {
+            this.title = e;
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

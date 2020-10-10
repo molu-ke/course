@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>非父子组件通信-$attrs 和$listeners</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <h1>{{appname}}</h1>
+      <Parent :appname="appname" :title="title" @listeners="updataName" />
+    </div>
+
+    <script>
+      const Child = {
+        template: `<div> 
+                      {{appname}} {{title}} 
+                      <button @click="$emit('listeners','匮乏')">修改</button> 
+                  </div>`,
+        props: ["appname", "title"],
+      };
+
+      const Parent = {
+        inheritAttrs: true,
+        template: `<div>
+                    {{this.$attrs}}
+                     <Child  v-bind="$attrs" v-on="$listeners"/>
+                    </div>`,
+        components: {
+          Child,
+        },
+      };
+
+      const app = new Vue({
+        el: "#app",
+        components: {
+          Parent,
+        },
+        data() {
+          return {
+            appname: "这是app名称",
+            title: "智慧平台",
+          };
+        },
+        methods: {
+          updataName() {
+            this.appname = "名称";
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

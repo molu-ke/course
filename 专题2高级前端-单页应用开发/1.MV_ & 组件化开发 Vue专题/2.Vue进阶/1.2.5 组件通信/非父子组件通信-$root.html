@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>非父子组件通信-$root</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <h1>{{title}}</h1>
+      <Parent/>
+    </div>
+
+    <script>
+      const Child = {
+        template: `<div> 
+                     
+                  </div>`,
+        created(){
+          console.log(this.$root.title)
+        }
+        
+      };
+
+      const Parent = {
+        template: `<div> <Child/> </div>`,
+        components: {
+          Child,
+        },
+      };
+
+      const app = new Vue({
+        el: "#app",
+        components: {
+          Parent,
+        },
+        data() {
+          return {
+            title: "智慧平台",
+          };
+        },
+        methods: {
+   
+        },
+      });
+    </script>
+  </body>
+</html>

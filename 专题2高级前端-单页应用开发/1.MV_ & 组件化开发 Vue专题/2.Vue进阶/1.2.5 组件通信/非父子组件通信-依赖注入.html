@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>非父子组件通信-依赖注入</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <h1>
+        {{projectName}}
+        <br />
+        {{appName}}
+        <br />
+        {{timeFlag}}
+      </h1>
+      <button @click="edit">修改appName</button>
+      <Parent />
+     
+    </div>
+
+    <script>
+      const Child = {
+        inject: ["appName", "projectName","timeFlag"],
+        template: `<div>
+                    {{projectName}}
+                    <br/>
+                    {{appName}} 此时Parent修改了appName
+                    <br/>
+                    {{timeFlag}}
+                  </div>`,
+      };
+
+      const Parent = {
+        inject: ["appName", "timeFlag", "projectName"],
+        provide() {
+          return {
+            appName: this.appName + "父级接收上级传来数据处理后的appName",
+          };
+        },
+        components: {
+          Child,
+        },
+        template: `<div>
+                    {{projectName}}
+                    <br/>
+                    {{appName}}
+                    <br/>
+                    {{timeFlag}}
+                    <br/>
+                    <br/>
+                    <Child/>
+                  </div>`,
+      };
+
+      const projectName = "跨级组件通信";
+      const app = new Vue({
+        el: "#app",
+        components: {
+          Parent,
+        },
+        provide() {
+          console.log(this);
+          return {
+            projectName: this.projectName,
+            appName: this.appName,
+            timeFlag: this.timeFlag,
+          };
+        },
+        data() {
+          return {
+            projectName,
+            appName: "这是app名称",
+            now: Date.now(),
+          };
+        },
+        methods:{
+          edit(){
+            this.appName = "智慧服务平台"
+          }
+        },
+        computed: {
+          timeFlag() {
+            return this.now;
+          },
+        },
+        created() {
+          setInterval(() => (this.now = Date.now()), 1000);
+        },
+      });
+    </script>
+  </body>
+</html>
