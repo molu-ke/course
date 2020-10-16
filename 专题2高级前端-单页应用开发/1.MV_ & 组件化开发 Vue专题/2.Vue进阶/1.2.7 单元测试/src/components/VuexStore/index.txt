@@ -1,0 +1,7 @@
+// 测试一个 Vuex Store
+
+// 1、分别单元化测试 getter、mutation 和 action
+// 请看getters.spec.js   mutations.spec.js文件
+ 
+// 2、创建一个 store 并针对其进行测试
+// 请看store-config.spec.js文件
