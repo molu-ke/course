@@ -1,0 +1,28 @@
+compileToFunctions  从哪里来？
+
+compiled
+1：是个对象
+2：存储编译之后的信息
+    errors  编译过程中的错误信息
+    tips    编译过程中的警告信息
+    render  渲染函数所需的字符串（当前模板）
+    staticRenderFns   静态的子节点 [ function: render(){} , function: render(){} ]
+
+(function anonymous() {
+    with(this){
+        return _c(
+            'div',
+            {   attrs:{"id":"app"}  },
+            [   _v( "\n        " + _s(message) + "\n        ") ]
+        )
+    }
+})
+
+code =  _c('div',{attrs:{"id":"app"}},[_v("\n        "+_s(message)+"\n        ")])
+
+
+finalOptions
+    编译器内置的配置对象 +  用户自定义的配置对象
+                       ||
+inalOptions = {}.__proto__.baseOptions()  (通过原型链的方式整合结果 )
+

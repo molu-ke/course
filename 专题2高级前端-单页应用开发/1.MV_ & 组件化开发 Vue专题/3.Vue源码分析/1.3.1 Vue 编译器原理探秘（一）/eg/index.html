@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 编译器原理探秘</title>
+</head>
+<body>
+    <div id="app">
+        {{message}}
+        <!-- <input type="text" v-model="message"> -->
+    </div>
+    <script src="./vue2.5.1.js"></script>
+    <script>
+        var vm = new Vue({
+            el:'#app',
+            data:{
+                message:'this is test code'
+            }
+
+        })
+        console.log(vm.$options.render)
+    </script>
+</body>
+</html>
