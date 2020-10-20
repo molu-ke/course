@@ -1,0 +1,45 @@
+解析HTML
+parseHTML(template,{
+    start:function(){},   // 开始标签的构造函数
+    end:function(){},     // 结束标签的构造函数
+    chars:function(){},   // 文本的构造函数
+    comment:function(){}, // 注释的构造函数
+})
+
+
+1、解释html字符串  提取信息(单个节点)
+    <div id='app'>{{ message }}</div>
+
+
+
+
+
+stack   检测一个非一元标签 是否缺少闭合标签
+<div id='app'><span><a></span>{{ message }}</div>
+
+['div','span','a']    ['span','div']
+stack[2] === 'span'  a是缺少闭合标签的
+
+
+
+
+while('<div id='app'>{{ message }}</div>') { // ''
+
+}
+
+解析token的操作   正则文法规则
+
+第一次解析
+原字符串： <div id='app'>{{ message }}</div>
+查找token: <div id='app'>         实际的情况 <div
+剩余的字符： {{ message }}</div>
+
+第二次解析
+原字符串： {{ message }}</div>
+查找token: {{ message }}
+剩余的字符： </div>
+
+第三次解析
+原字符串： </div>
+查找token: </div>
+剩余的字符： ''

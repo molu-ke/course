@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AST</title>
+</head>
+<body>
+    <script>
+        var template = "<div id='app'>{{ message }} <span></span> </div>"
+
+        // 解析单个标签
+        var initAst = {
+            type:1,
+            tag:"div",
+            attrs:[{
+                name:'id',
+                value:'app'
+            }],
+            attrsList:[{
+                name:'id',
+                value:'app'
+            }],
+            attrsMap:{
+                id:'app'
+            },
+            parent:undefined,
+            plain:false,
+            static:false,
+            staticRoot:false
+        }
+
+        // 完整的模板抽象描述对象(AST)
+        var AST = {
+            type:1,
+            tag:"div",
+            attrs:[{
+                name:'id',
+                value:'app'
+            }],
+            attrsList:[{
+                name:'id',
+                value:'app'
+            }],
+            attrsMap:{
+                id:'app'
+            },
+            children:[
+                {
+                    type:2,
+                    expression:'_s(message)',
+                    token:[{
+                        '@binding':'message'
+                    }],
+                    text:'{{message}}',
+                    static:false
+                },
+                {
+                    type:1,
+                    tag:'span',
+                    attrsList:[],
+                    attrsMap:[],
+                    parent:{
+                        type:1,
+                        tag:"div",
+                        attrs:[{
+                            name:'id',
+                            value:'app'
+                        }],
+                        attrsList:[{
+                            name:'id',
+                            value:'app'
+                        }]
+                    },
+                    children:[],
+                    plain:false,
+                    static:true,
+                    staticInFor:false,
+                    staticRoot:false,
+                    pre:undefined
+                }
+            ],
+            parent:undefined,
+            plain:false,
+            static:false,
+            staticRoot:false
+        }
+
+    </script>
+</body>
+</html>

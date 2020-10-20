@@ -8445,7 +8445,7 @@ function parseHTML (html, options) {
     if (!lastTag || !isPlainTextElement(lastTag)) {
       var textEnd = html.indexOf('<');
       if (textEnd === 0) {
-        // Comment:
+        // Comment:   <!---->
         if (comment.test(html)) {
           var commentEnd = html.indexOf('-->');
 
@@ -8458,7 +8458,7 @@ function parseHTML (html, options) {
           }
         }
 
-        // http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment
+        // http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment  <![]>
         if (conditionalComment.test(html)) {
           var conditionalEnd = html.indexOf(']>');
 
@@ -8468,7 +8468,7 @@ function parseHTML (html, options) {
           }
         }
 
-        // Doctype:
+        // Doctype:  <!doctype>
         var doctypeMatch = html.match(doctype);
         if (doctypeMatch) {
           advance(doctypeMatch[0].length);
