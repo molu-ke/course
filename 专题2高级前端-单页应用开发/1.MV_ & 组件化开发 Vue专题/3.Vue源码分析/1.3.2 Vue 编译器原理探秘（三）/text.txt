@@ -1,0 +1,38 @@
+
+
+1、不正常的情况   pos 大于等于0  stack.length - 1  >  pos
+<div id='app'> <span><a></span> {{ message }}</div>
+
+stack  [div,span,a]  
+
+stack[2].name === name
+        a     === span
+
+stack[1].name === name
+        span  === span
+
+2、正常的情况下   pos 大于等于0   stack.length - 1  ==  pos
+<div id='app'> <span></span> {{ message }}</div>
+
+stack  [div,span]  
+
+stack[1].name === name
+        span  === span
+
+3、不正常的情况下   pos 小于0   
+<div id='app'> <span></a></span> {{ message }}</div>
+
+stack  [div,span]  
+
+stack[1].name === name
+         span  === a
+
+stack[0].name === name
+         div  === a
+
+
+与浏览器的行为一致性
+
+在浏览器中  </p> == > <p></p>
+           </br>  == > <br>
+           </a> == > '' 
