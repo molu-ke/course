@@ -164,6 +164,7 @@
         options
     ) {
         var ast = parse(template.trim(), options); // 解析模析  产出AST对象（描述对象）
+        console.log(ast)
         optimize(ast, options);  // 标注静态节点
         var code = generate(ast, options); // 产出渲染函数所需的字符串
         return {
@@ -206,22 +207,128 @@
     var comment = /^<!--/;
     var conditionalComment = /^<!\[/;
 
+    function makeAttrsMap(attrs) {
+        var map = {};
+        for (var i = 0, l = attrs.length; i < l; i++) {
+            if (
+                "development" !== 'production' &&
+                map[attrs[i].name] && !isIE && !isEdge
+            ) {
+                warn$2('duplicate attribute: ' + attrs[i].name);
+            }
+            map[attrs[i].name] = attrs[i].value;
+        }
+        return map
+    }
+
+
+    function createASTElement(tag, attrs, parent) {
+        return {
+            type: 1,
+            tag: tag,
+            attrsList: attrs,
+            attrsMap: makeAttrsMap(attrs), // id=app ==>  {id:'app'}
+            parent: parent,
+            children: []
+        }
+    }
 
     function parse(template, options) {
+        // 第一次  root,currentParent  = 根节点的描述对象   stack = [根节点的描述对象]
+        var currentParent,stack = [],root;
         parseHTML(template, {
-            start: function () {
-                console.log('解析开始标签调用的钩子函数')
+            // 解析开始标签调用的钩子函数
+            start: function (tag, attrs, unary) {
+               
+                var element = createASTElement(tag, attrs, currentParent);
+
+                function checkRootConstraints (el) {
+                    {
+                      if (el.tag === 'slot' || el.tag === 'template') {
+                        warnOnce(
+                          "Cannot use <" + (el.tag) + "> as component root element because it may " +
+                          'contain multiple nodes.'
+                        );
+                      }
+                      if (el.attrsMap.hasOwnProperty('v-for')) {
+                        warnOnce(
+                          'Cannot use v-for on stateful component root element because ' +
+                          'it renders multiple elements.'
+                        );
+                      }
+                    }
+                  }
+            
+                  // tree management  root 存储根节点的描述对象
+                  if (!root) {
+                    root = element;
+                    checkRootConstraints(root); // 检测根节点的规范性
+                  } else if (!stack.length) {
+                    // allow root elements with v-if, v-else-if and v-else
+                    if (root.if && (element.elseif || element.else)) {
+                      checkRootConstraints(element);
+                      addIfCondition(root, {
+                        exp: element.elseif,
+                        block: element
+                      });
+                    } else {
+                      warnOnce(
+                        "Component template should contain exactly one root element. " +
+                        "If you are using v-if on multiple elements, " +
+                        "use v-else-if to chain them instead."
+                      );
+                    }
+                  }
+
+                  if (currentParent && !element.forbidden) { //  !element.forbidden => true
+                    if (element.elseif || element.else) {
+                      processIfConditions(element, currentParent);
+                    } else if (element.slotScope) { // scoped slot
+                      currentParent.plain = false;
+                      var name = element.slotTarget || '"default"';(currentParent.scopedSlots || (currentParent.scopedSlots = {}))[name] = element;
+                    } else {
+                      currentParent.children.push(element); // 描述html字符串的子父级关系
+                      element.parent = currentParent;
+                    }
+                  }
+       
+
+                  if (!unary) {
+                    currentParent = element;
+                    stack.push(element);
+                  } else {
+                    // endPre(element);
+                  }
             },
+             // 解析结束标签的钩子函数
             end: function () {
-                console.log('解析结束标签的钩子函数')
+                //  删除尾随空格  <div>     </div>
+                var element = stack[stack.length - 1];
+                var lastNode = element.children[element.children.length - 1];
+                if (lastNode && lastNode.type === 3 && lastNode.text === ' ' && !inPre) {
+                    element.children.pop();
+                }
+                // 修正后续解析的开始标签的父标签描述对象引用
+                stack.length -= 1;
+                currentParent = stack[stack.length - 1];
+             
             },
-            chars: function () {
-                console.log('解析文本调用的钩子函数')
+            // 解析文本调用的钩子函数
+            chars: function (text) {
+                // 静态文本  动态文本
+                var children = currentParent.children;
+                children.push({
+                    type: 3,
+                    text: text
+                });
+              
             },
             comment: function () {
                 console.log('解析注释的钩子函数')
             },
         })
+
+        return root; // 跟节点的描述对象
 
     }
 
@@ -292,8 +399,6 @@
             }
         }
 
-
-        console.log('解析已完成:', html, stack)
 
         function advance(n) {
             index += n;
@@ -382,7 +487,7 @@
             } else {
                 pos = 0;
             }
-        
+
             if (pos >= 0) {
                 for (var i = stack.length - 1; i >= pos; i--) {
                     if ((i > pos || !tagName) && options.warn) {
@@ -394,7 +499,6 @@
                         options.end(stack[i].tag, start, end);
                     }
                 }
-                console.log(pos)
                 stack.length = pos;
                 lastTag = pos && stack[pos - 1].tag;
 

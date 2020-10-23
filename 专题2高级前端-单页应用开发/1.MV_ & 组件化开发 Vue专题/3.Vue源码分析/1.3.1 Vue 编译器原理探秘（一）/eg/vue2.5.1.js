@@ -8783,7 +8783,7 @@ function parse (
       var ns = (currentParent && currentParent.ns) || platformGetTagNamespace(tag);
 
       // handle IE svg bug
-      /* istanbul ignore if */
+      /* istanbul ignore if   IE浏览在渲染SVG标签的时候会有多余的属性出现*/
       if (isIE && ns === 'svg') {
         attrs = guardIESVGBug(attrs);
       }
@@ -8793,7 +8793,8 @@ function parse (
         element.ns = ns;
       }
 
-      if (isForbiddenTag(element) && !isServerRendering()) {
+      // isForbiddenTag 是不是被禁止的标签   isServerRendering 非服务的渲染
+      if (isForbiddenTag(element) && !isServerRendering()) { 
         element.forbidden = true;
         "development" !== 'production' && warn$2(
           'Templates should only be responsible for mapping the state to the ' +
@@ -8802,11 +8803,12 @@ function parse (
         );
       }
 
-      // apply pre-transforms
+      // apply pre-transforms  Vue  mvvm数据双向绑定  语法糖   input 标签  预处理
       for (var i = 0; i < preTransforms.length; i++) {
         element = preTransforms[i](element, options) || element;
       }
 
+      // 解析开始标签上的指令  v-for   v-if   v-once   v-pre
       if (!inVPre) {
         processPre(element);
         if (element.pre) {

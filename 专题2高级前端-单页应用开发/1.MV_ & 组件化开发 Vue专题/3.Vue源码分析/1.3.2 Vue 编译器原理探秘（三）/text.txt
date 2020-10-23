@@ -36,3 +36,19 @@ stack[0].name === name
 在浏览器中  </p> == > <p></p>
            </br>  == > <br>
            </a> == > '' 
+
+
+
+//  currentParent.ns  当前父节点的作用域（命名空间）
+var ns = (currentParent && currentParent.ns) || platformGetTagNamespace(tag);
+
+currentParent  表示当前解析的开始标签  父节点的描述对象
+<div id='app'><span></span>{{ message }}</div>
+1、 div  根节点      currentParent  === undefined
+2、 span 子节点      currentParent  === {div...}
+
+
+end函数 修正 stack 数组
+[{div...},{span...}]
+[{div...}]
+currentParent = {div...}
