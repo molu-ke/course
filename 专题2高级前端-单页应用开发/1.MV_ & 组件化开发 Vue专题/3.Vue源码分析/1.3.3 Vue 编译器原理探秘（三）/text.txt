@@ -48,7 +48,13 @@ currentParent  表示当前解析的开始标签  父节点的描述对象
 2、 span 子节点      currentParent  === {div...}
 
 
-end函数 修正 stack 数组
+end函数 修正 stack 数组  解决兄弟元素的问题
+<div id='app'>
+        <span></span>
+        <span></span>
+        {{ message }}
+</div>
+
 [{div...},{span...}]
 [{div...}]
 currentParent = {div...}

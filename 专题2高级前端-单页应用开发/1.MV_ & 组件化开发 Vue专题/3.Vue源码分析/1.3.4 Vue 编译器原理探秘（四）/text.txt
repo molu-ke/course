@@ -1,0 +1,19 @@
+
+chars 
+
+在chars钩子函数中currentParent为undefined的原因
+1、
+   <template>
+        this is test  code
+   </template>
+
+2、
+   <template>
+        <div></div>
+        this is test  code
+   </template>    
+
+
+
+Vue创建文本节点
+document.createTextNode() -->  要对其字符实体编号
