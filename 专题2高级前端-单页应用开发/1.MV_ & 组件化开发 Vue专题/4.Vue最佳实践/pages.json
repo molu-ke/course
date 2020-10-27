@@ -1,0 +1,15 @@
+{
+    "dashboard": {
+        "entry": "./src/views/dashboard/index.js",
+        "template": "./src/pages/dashboard.html",
+        "filename": "dashboard.html",
+        "favicon": "./src/pages/favicon.ico",
+        "title": "Dashboard",
+        "inject": true,
+        "chunks": [
+            "chunk-vendors",
+            "dashboard"
+        ],
+        "chunksSortMode": "manual"
+    }
+}
