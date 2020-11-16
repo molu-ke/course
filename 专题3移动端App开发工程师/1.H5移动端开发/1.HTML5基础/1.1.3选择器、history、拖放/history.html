@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>history</title>
+</head>
+<body>
+    <a href="https://www.163.com/">go to netease 163</a>
+    <button onclick="back()">Back History</button>
+    <button onclick="forward()">Forward History</button>
+    <button onclick="push()">pushState</button>
+
+    <script>
+        function push(){
+            var stateObj = { foo:'bar'};
+            window.history.pushState(stateObj,'page 2','bar.html')
+        }
+
+        function back(){
+            // 在history中向后跳转，等同于window.history.go(-1)
+            window.history.back();
+        }
+
+        function forward(){
+            // 在history中向前跳转，等同于window.history.go(1)
+            window.history.forward();
+        }
+
+        window.onpopstate = function(event){
+            console.log('location:' + document.location + '.state')
+        }
+
+
+    </script>
+</body>
+</html>
+
+<!-- 
+Mac:
+    chrome49以前版本
+    open -a "Google Chrome" --args --disable-web-security
+    chrome49以后版本
+    open -a /Applications/Google\ Chrome.app --args --disable-web-security --user-data-dir
+
+Window:
+    chrome.exe --args --disable-web-security --user-data-dir=D:\MyChromeDevUserData
+-->

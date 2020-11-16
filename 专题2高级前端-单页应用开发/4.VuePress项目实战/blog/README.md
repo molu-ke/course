@@ -1,6 +1,6 @@
-# my-docs
+# blog
 
-> MYDOCS
+> ke
 
 ## Development
 

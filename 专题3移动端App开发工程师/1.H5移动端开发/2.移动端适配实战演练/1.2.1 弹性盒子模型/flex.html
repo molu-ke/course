@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        html,body{
+            height:100%;
+        }
+        body{
+            display:flex;
+        }
+        .con {
+            display:flex;
+            height:200px;
+            width:100%;
+            border-bottom:1px solid #333;
+            flex-wrap:wrap;
+        }
+        .con>div{
+            width:200px;
+            height:50px;
+            line-height:50px;
+            text-align: center;
+            color:#fff;
+            background:orange;
+            margin:auto;
+            /* 
+                flex布局下都不生效
+                float:left; 
+                vertical-align: bottom;
+                clear: both;
+            */
+        }
+    </style>
+</head>
+<body>
+    <div class="con">
+        <div>我是div1</div>
+        <div>我是div2</div>
+        <div>我是div3</div>
+        <div>我是div4</div>
+        <div>我是div5</div>
+        <div>我是div6</div>
+        <div>我是div7</div>
+        <div>我是div8</div>
+    </div>
+</body>
+</html>

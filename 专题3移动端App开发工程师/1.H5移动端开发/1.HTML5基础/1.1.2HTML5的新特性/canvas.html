@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>canvas</title>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="400" height="400">
+      您的浏览器暂时不支持canvas，请升级您的浏览器
+    </canvas>
+    <script>
+      window.onload = function () {
+        var c = document.getElementById("myCanvas");
+        if (!c.getContext) return;
+        var ctx = c.getContext("2d");
+        ctx.font = "30px Arial";
+        ctx.fillText("Hello World", 50, 50);
+      };
+    </script>
+  </body>
+</html>

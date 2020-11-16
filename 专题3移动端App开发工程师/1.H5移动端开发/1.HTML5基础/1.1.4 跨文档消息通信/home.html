@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跨文档消息传输示例</title>
+</head>
+<body>
+    <iframe src="file:///E:/course/%E4%B8%93%E9%A2%983%E7%A7%BB%E5%8A%A8%E7%AB%AFApp%E5%BC%80%E5%8F%91%E5%B7%A5%E7%A8%8B%E5%B8%88/1.H5%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91/1.HTML5%E5%9F%BA%E7%A1%80/1.1.4%20%E8%B7%A8%E6%96%87%E6%A1%A3%E6%B6%88%E6%81%AF%E9%80%9A%E4%BF%A1/msg.html" width="400" height="400" onload="sendMsg()" id="iframe"></iframe>
+    <div id="div1"></div>
+    <script type="text/javascript">
+        window.addEventListener('message',function(event){
+            console.log('home.html',event)
+            document.getElementById('div1').innerHTML='从event.origin='+event.origin+',那里来的消息event.data='+event.data;
+        })
+
+        // 向id为iframe内嵌框架中发送一条消息
+        function sendMsg(){
+            console.log('iframe加载成功')
+            // 获取框架中的window
+            var iframeWindow = document.getElementById('iframe').contentWindow;
+            var information = {'张三':10,'李四':20,'王五':30}
+            var jsontext = JSON.stringify(information)
+            setTimeout( function(){
+                // iframe窗口加载完成，使用postMessage向iframe内发送消息
+                // 第一个参数为：消息内容
+                // 第二个参数为：接收消息的对象窗口url,一般与iframe的src一致
+                iframeWindow.postMessage(jsontext,'file:///E:/course/%E4%B8%93%E9%A2%983%E7%A7%BB%E5%8A%A8%E7%AB%AFApp%E5%BC%80%E5%8F%91%E5%B7%A5%E7%A8%8B%E5%B8%88/1.H5%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%80%E5%8F%91/1.HTML5%E5%9F%BA%E7%A1%80/1.1.4%20%E8%B7%A8%E6%96%87%E6%A1%A3%E6%B6%88%E6%81%AF%E9%80%9A%E4%BF%A1/msg.html')
+            },2000)
+        }
+    </script>
+</body>
+</html>

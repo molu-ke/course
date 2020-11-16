@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择器</title>
+    <style>
+        .inline {
+            float:left;
+            padding: 20px;
+        }
+
+         /* 子集选择器 */
+        .parent1 > .childs {
+            color:red
+        }
+        /* 后代选择器 */
+        .parent2 .childs {
+            color:blue
+        }
+        /* 兄弟选择器 */
+        .brother1 + .brothers {
+            color:greenyellow
+        }
+        /* 通用选择器 */
+        .brother2 ~ .brothers {
+            color:greenyellow
+        }
+
+    </style>
+</head>
+<body>
+    <div class="inline">
+        <div class="parent1">
+            <span class="childs">child1</span>
+            <div>
+                <span class="childs">child1</span>
+            </div>
+        </div>
+        <br>
+        <div class="parent2">
+            <span class="childs">child2</span>
+            <div>
+                <span class="childs">child2</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="inline">
+        <div>
+            <span class="brother1">brother1</span>
+            <span class="brothers">brother1</span>
+            <span class="brothers">brother1</span>
+        </div>
+        <br>
+        <div>
+            <span class="brother2">brother2</span>
+            <span class="brothers">brother2</span>
+            <span class="brothers">brother2</span>
+        </div>
+    </div>
+</body>
+</html>

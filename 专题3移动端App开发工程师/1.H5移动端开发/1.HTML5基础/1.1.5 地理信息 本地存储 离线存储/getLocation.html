@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>地理信息</title>
+    <style>
+      #box {
+        width: 500px;
+        height: 500px;
+        border: 2px solid deeppink;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 
+        注意：
+            请在移动端测试该页面，因为在谷歌浏览上会报：
+                code:2
+                message: "Network location provider at 'https://www.googleapis.com/' : No response received."
+    -->
+    <button id="btn">请求位置信息</button>
+    <div id="box"></div>
+    <script>
+      let btn = document.getElementById("btn");
+      let box = document.getElementById("box");
+
+      // 点击按钮获取地理位置信息
+      btn.onclick = function () {
+        // getCurrentPosition与定时器setInterval类拟多次请求，因为位置需要不间断的获取
+        // 直接navigator.getLocation表示单次获取位置
+
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            box.innerHTML += "经度" + position.coords.longitude;
+            box.innerHTML += "纬度" + position.coords.latitude;
+            box.innerHTML += "准确度" + position.coords.accuracy;
+            box.innerHTML += "海拔" + position.coords.altitude;
+            box.innerHTML += "海拔准确度" + position.coords.altitudeAcuracy;
+            box.innerHTML += "行进方向" + position.coords.heading;
+            box.innerHTML += "地面速度" + position.coords.speed;
+            box.innerHTML += "请求的时间" + new Date(position.timestamp);
+          },
+          function (err) {
+            console.log(err);
+            // code 返回获取位置的状态
+            // 0 : 不包括其他错误编号中的错误
+            // 1 : 用户拒绝浏览器获取位置信息
+            // 2 : 尝试获取用户信息，但失败
+            // 3 : 设置了timeout值，获取位置超时了
+          },
+          {
+            enableHeighAcuracy: false, // 位置是否精确获取
+            timeout: 50000, // 获取位置允许的最长时间
+            maximumAge: 1000, // 多久更新获取一次位置
+          }
+        );
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>样式与颜色</title>
+</head>
+<body onload="draw()">
+    <canvas id="test" width="150" height="150px"></canvas>
+    <script>
+        function draw(){
+            var canvas = document.getElementById('test');
+            if(canvas.getContext){
+                var ctx = canvas.getContext('2d')
+
+                // 填充样式
+                // ctx.fillStyle="#ff0000"  
+
+                // 线性渐变
+                var lineargradient = ctx.createLinearGradient(0,0,150,150)
+                lineargradient.addColorStop(0,'white')
+                lineargradient.addColorStop(1,'black')
+                ctx.fillStyle = lineargradient
+
+                ctx.fillRect(25,25,100,100) // 实心矩形
+                ctx.clearRect(45,45,60,60) // 清除矩形区域
+                ctx.strokeStyle = 'rgb(0,255,0)' // 轮廓样式
+                ctx.strokeRect(50,50,50,50) // 空心矩形
+
+                // 清除矩形区域
+                ctx.clearRect(0,0,150,150) 
+
+                //  径向渐变
+                var lineargradient = ctx.createRadialGradient(75,75,0,75,75,100)
+                lineargradient.addColorStop(0,'white')
+                lineargradient.addColorStop(1,'black')
+                ctx.fillStyle = lineargradient
+                ctx.arc(75,75,50,0,2*Math.PI,true)
+                ctx.fill()
+
+                // 清除矩形区域
+                ctx.clearRect(0,0,150,150) 
+
+
+                ctx.beginPath() // 开始路径
+                ctx.lineWidth = 20 // 线条宽度
+                ctx.lineJoin = 'round' // 线条与线条间接合处的样式  round  bevel   miter
+                ctx.lineCap = 'round' // 线条末端样式   round butt  square
+                
+                ctx.moveTo(75,50) // 画笔移动到点75，50
+                ctx.lineTo(100,75) // 从上个点往100，75绘制直线
+                ctx.lineTo(45,125) // 再从上个点往45，125绘制直线
+                ctx.stroke()
+            }
+        }
+    </script>
+</body>
+</html>

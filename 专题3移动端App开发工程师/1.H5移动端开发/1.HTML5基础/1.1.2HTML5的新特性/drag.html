@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拖放</title>
+    <style>
+        .small-box{
+            width:100px;
+            height:100px;
+            border:1px solid #000;
+            background:blueviolet;
+            float:left;
+        }
+        .big-box{
+            width:300px;
+            height:300px;
+            border:1px solid #000;
+            background:#fff;
+            float:left;
+        }
+    </style>
+</head>
+<body>
+    <div id='big' class='big-box'
+        ondragenter="dragenter(event)"
+        ondragover="dragover(event)"
+        ondragleave="dragleave(event)"
+        ondrop="drop(event)">
+    </div>
+    <div id='small' class='small-box'
+        draggable="true"
+        ondragstart="dragstart(event)"
+        ondrag="drag(event)"
+        ondragend="dragend(event)">
+    </div>
+
+    <script>
+        function dragstart(event){
+            console.log('start')
+            event.dataTransfer.setData('source',event.target.id)
+        }
+
+        function drag(event){
+            console.log('drag')
+        }
+
+        function dragend(event){
+            console.log('end')
+        }
+
+        function dragenter(event){
+            console.log('enter')
+        }
+
+        function dragover(event){
+            console.log('over')
+            event.preventDefault()
+        }
+
+        function dragleave(event){
+            console.log('leave')
+        }
+
+        function drop(event){
+            console.log('drop')
+            var source = document.getElementById(event.dataTransfer.getData('source'))
+            event.target.appendChild(source)
+        }
+
+    </script>
+</body>
+</html>

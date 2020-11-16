@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>h5事件</title>
+    <style>
+        .con{
+            width:300px;
+            height:200px;
+            background:green;
+            color:white;
+        }
+        .btn3{
+            width:300px;
+            height:300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>移动端事件</h1>
+    <button class='btn1'>单击事件</button>
+    <button class='btn2'>长按事件</button>
+    <button class='btn3'>左滑</button>
+
+    <script src="./h5.js"></script>
+    <script>
+        $('.btn1').tap( ()=> {
+            console.log('单击事件')
+        })
+        $('.btn2').longTap( ()=> {
+            console.log('长按事件')
+        })
+        $('.btn3').slideLeft( ()=> {
+            console.log('左滑')
+        })
+    </script>
+</body>
+</html>

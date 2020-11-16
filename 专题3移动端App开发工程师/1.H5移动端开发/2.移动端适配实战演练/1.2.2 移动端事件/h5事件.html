@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>h5事件</title>
+    <style>
+        .con{
+            width:300px;
+            height:200px;
+            background:green;
+            color:white;
+        }
+    </style>
+</head>
+<body>
+    <h1>移动端事件</h1>
+    <button id='touchstart'>touchstart</button>
+    <div class='con' id='con'>
+
+    </div>
+    <script>
+        function $my(id){
+            return document.getElementById(id)
+        }
+
+        let btn = $my('touchstart')
+        let con = $my('con')
+
+        btn.addEventListener('touchstart',e => {
+            console.log('touchstart')
+        })
+
+        // pc 2s <= 网页打开时间   移动端  1.5s <= 网页打开时间  
+        // click是pc端事件，在移动端中会有300ms延迟
+        btn.addEventListener('click',e => {
+            console.log('click')
+        })
+
+        // con.addEventListener('touchmove',e => {
+        //     console.log('touchmove')
+        // })
+
+        let i = 1;
+        let time = null;
+        // 事件节流
+        con.addEventListener('touchmove',e => {
+           if(!time){
+               time = setTimeout( () => {
+                    time = null
+                    console.log('touchmove')
+               },1000)
+           }
+        })
+
+    </script>
+</body>
+</html>

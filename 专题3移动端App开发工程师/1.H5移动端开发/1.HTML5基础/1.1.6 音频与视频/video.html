@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>video</title>
+</head>
+<body>
+    <button onclick="playPause()">播放/暂停</button>
+    <video id="video1" width="420" style="margin-top:15px">
+        <source src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4"/>
+        <source src="http://www.w3school.com.cn/example/html5/mov_bbb.ogg" type="video/ogg"/>
+        你的浏览器不支持html5的video标签
+    </video>
+    <script>
+         var myVideo = document.getElementById('video1');
+
+         myVideo.addEventListener('loadedmetadata',function(){
+             var vLength = myVideo.duration
+             console.log('视频的播放时长为(秒)：',vLength)
+         })
+
+
+         function playPause(){
+            if(myVideo.paused){
+                myVideo.play()
+            } else {
+                myVideo.pause()
+            }
+        }
+    </script>
+</body>
+</html>

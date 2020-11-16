@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跨文档消息传输示例</title>
+</head>
+<body>
+    <div id="div1">this is div1</div>
+    <script>
+          window.addEventListener('message',function(event){
+            console.log('msg.html',event)
+            document.getElementById('div1').innerHTML='从event.origin='+event.origin+',那里来的消息event.data='+event.data;
+       
+            // 给来源文档发送消息
+            event.source.postMessage('我已经收到数据了,谢谢',event.origin)
+        })
+    </script>
+</body>
+</html>

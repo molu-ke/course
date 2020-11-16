@@ -1,0 +1,20 @@
+{
+  "name": "blog",
+  "version": "0.0.1",
+  "description": "ke",
+  "main": "index.js",
+  "authors": {
+    "name": "ke",
+    "email": "403398543@qq.com"
+  },
+  "repository": "/blog",
+  "scripts": {
+    "dev": "vuepress dev blog --temp .temp",
+    "build": "vuepress build blog"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.3.1",
+    "@vuepress/theme-blog": "^2.1.0"
+  }
+}

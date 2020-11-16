@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基础API和用法</title>
+</head>
+<body onload="draw()">
+    <canvas id="test" width="150" height="150px"></canvas>
+    <script>
+        function draw(){
+            var canvas = document.getElementById('test');
+            if(canvas.getContext){
+                var ctx = canvas.getContext('2d')
+
+                // 小技巧   fill 填充    stroke 空心
+                ctx.fillRect(25,25,100,100) // 实心矩形
+                ctx.clearRect(45,45,60,60) // 清除矩形区域
+                ctx.strokeRect(50,50,50,50) // 空心矩形
+
+                ctx.clearRect(0,0,150,150) // 清除矩形区域
+                ctx.arc(75,75,50,0,2*Math.PI,true)
+                ctx.stroke()
+
+                ctx.clearRect(0,0,150,150) // 清除矩形区域
+                ctx.beginPath() // 开始路径
+                ctx.moveTo(75,50) // 画笔移动到点75，50
+                ctx.lineTo(100,75) // 从上个点往100，75绘制直线
+                ctx.lineTo(45,125) // 再从上个点往45，125绘制直线
+                ctx.stroke()
+            }
+        }
+    </script>
+</body>
+</html>

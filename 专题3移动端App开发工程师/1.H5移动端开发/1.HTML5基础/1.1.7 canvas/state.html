@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>状态、变形以及动画</title>
+</head>
+<body onload="draw()">
+    <!-- 
+        移动  translate 
+        缩放  scale
+        旋转  rotate
+        变形  transform
+    -->
+    <canvas id="test" width="500" height="500px"></canvas>
+    <script>
+        function draw(){
+            var canvas = document.getElementById('test');
+            if(canvas.getContext){
+                var context = canvas.getContext('2d')
+                context.lineWidth = "10"
+                context.strokeStyle = '#fe9901'
+                context.translate(canvas.width/2,canvas.height/2)
+                context.rotate(30/180*Math.PI)
+                context.beginPath()
+                context.moveTo(0,-180)
+                context.lineTo(0,-200)
+                context.stroke()
+
+                context.rotate(30/180*Math.PI)
+                context.beginPath()
+                context.moveTo(0,-140)
+                context.lineTo(0,-160)
+                context.stroke()
+                context.save()
+                context.rotate(30/180*Math.PI)
+                context.beginPath()
+                context.moveTo(0,-180)
+                context.lineTo(0,-200)
+                context.stroke()
+                context.restore()
+
+                context.rotate(30/180*Math.PI)
+                context.beginPath()
+                context.moveTo(0,-140)
+                context.lineTo(0,-160)
+                context.stroke()
+            }
+        }
+    </script>
+</body>
+</html>
