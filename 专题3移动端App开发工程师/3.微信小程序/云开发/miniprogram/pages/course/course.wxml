@@ -1,0 +1,5 @@
+<button bindtap="uploadImg">上传图片</button>
+<button bindtap="download">下载图片</button>
+<button bindtap="deleteData">删除图片</button>
+
+<image src="cloud://wx935863279cc836c3.7778-wx935863279cc836c3-1304274070/a.png"></image>

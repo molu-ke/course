@@ -1,0 +1,18 @@
+*{
+    background-color: blueviolet;
+}
+.border-yellow{
+    border:4px solid yellow
+}
+
+.div1{
+    display:-webkit-box;
+    display:-ms-flexbox;
+    display:flex;
+    width:50px;
+    height:50px;
+    background-color:pink;
+}
+.page{
+    font-size:40px;
+}

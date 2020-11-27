@@ -1,0 +1,24 @@
+body{
+    font-size:20px;
+}
+.colorblue{
+    color:blue;
+}
+
+/* 全局  定义全局类名 */
+:global .border-white{
+    border:4px solid white;
+}
+
+/* 
+    局部  定义局部类名  
+    注意：开启modules后，会对局部类名进行编码 ._3NVR7gTQFJX9OFzUnpmcLf
+*/
+.div1{
+    width:50px;
+    height:50px;
+    background-color:pink;
+    /* 继承 */
+    /* composes:border-white; */
+    composes:border-yellow from './test.css';
+}

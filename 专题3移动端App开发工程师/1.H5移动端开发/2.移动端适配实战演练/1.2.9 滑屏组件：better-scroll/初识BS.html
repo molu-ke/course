@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Document</title>
+    <style>
+    </style>
+    <style>
+        body{
+            margin: 0;
+        }
+        body,html{
+            height: 100%;
+        }
+        ul,ol{
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+       
+        .con{
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        } 
+        /* 横向滑屏 */
+        ul{
+            /* width: 150vw; */
+        }
+        ul>li{
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            text-indent: 20px;
+            border-bottom: 1px solid #666666;
+            color: #333333;
+        }
+        .pink{
+            width: 500px;
+            height: 500px;
+            background: pink;
+        }
+    </style>
+</head>
+<body>
+    <div class="con">
+        <ul class="list">
+            
+        </ul>
+        <!-- 初始化元素的第一个子元素生效 -->
+        <!-- <div class="pink"></div> -->
+       
+    </div>
+</body>
+<script type="text/javascript" src="https://unpkg.com/better-scroll@1.0.1/dist/bscroll.min.js"></script>
+<script>
+    function getData(){
+        var list = document.querySelector(".list");
+        var html = "";
+        for(var i = 0; i < 30; i++){
+            html += "<li>我是第"+(i+1)+"个li</li>"
+        }
+        list.innerHTML = html;
+      
+    }
+    // 原生滚动可能存在的问题
+    // 带回弹 有叠层 下面的元素点不到
+    // 阻止事件穿透 只能清除默认事件
+    window.onload = () => {
+        getData();
+        con();
+    }
+
+    // 初始con
+    function con(){
+        let con = document.querySelector(".con");
+        // con 父容器
+        let bscroll = new BScroll(con, {
+            // startX: 100,
+            // startY: 100,
+            scrollX: false,
+            scrollY : true
+        })
+        bscroll.on("beforeScrollStart", ()=>{
+            console.log("我开始滚动了")
+        })
+
+    }
+  
+</script>
+</html>

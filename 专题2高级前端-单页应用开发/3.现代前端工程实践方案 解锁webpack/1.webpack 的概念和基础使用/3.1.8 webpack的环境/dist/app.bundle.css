@@ -1,0 +1,12 @@
+.b{
+    background-color: blueviolet;
+}
+
+div{
+    display:-webkit-box;
+    display:-ms-flexbox;
+    display:flex;
+}.a{
+    font-size:20px;
+    
+}
