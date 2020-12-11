@@ -1,0 +1,13 @@
+.div1{
+    width:200px;
+    height:200px;
+    border:1px solid red;
+}
+.img1{
+    background:url(assets/img/1.d3b9.jpg) no-repeat;
+    background-size:cover;
+}
+.img2{
+    background:url(assets/img/2.be0b.jpg) no-repeat;
+    background-size:cover;
+}

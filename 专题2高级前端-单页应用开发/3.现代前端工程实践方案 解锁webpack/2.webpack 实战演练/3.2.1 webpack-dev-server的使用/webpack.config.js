@@ -54,7 +54,7 @@ module.exports = {
 
   devServer: {
     port: 9001, // 指定端口号
-    inline:true,
+    inline:true, // 服务的开启模式
     overlay: true, // 出现编译器错误或警告时，在浏览器中显示全屏覆盖
     // historyApiFallback:true,
     historyApiFallback:{
@@ -62,7 +62,7 @@ module.exports = {
         {
           from:/^\/([ -~]+)/,
           to:function(context){
-            console.log(context[1])
+            console.log('-----------',context[1])
             return './'+ context.mathch[1] + '.html'
           }
         }
