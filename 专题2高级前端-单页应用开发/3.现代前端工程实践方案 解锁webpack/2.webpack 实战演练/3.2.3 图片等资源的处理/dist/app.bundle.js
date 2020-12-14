@@ -94,7 +94,18 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _css_test1_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./css/test1.css */ \"./src/css/test1.css\");\n/* harmony import */ var _css_test1_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_css_test1_css__WEBPACK_IMPORTED_MODULE_0__);\n\r\n\r\nvar  name = 'webpack'\r\nconsole.log(name)\n\n//# sourceURL=webpack:///./src/app.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _css_test1_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./css/test1.css */ \"./src/css/test1.css\");\n/* harmony import */ var _css_test1_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_css_test1_css__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _assets_1_jpg__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./assets/1.jpg */ \"./src/assets/1.jpg\");\n/* harmony import */ var _assets_1_jpg__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_assets_1_jpg__WEBPACK_IMPORTED_MODULE_1__);\n\r\n\r\n\r\nvar img = new Image();\r\nimg.src = _assets_1_jpg__WEBPACK_IMPORTED_MODULE_1___default.a;\r\ndocument.getElementById('mydiv').appendChild(img)\r\n\r\nvar  name = 'webpack'\r\nconsole.log(name)\n\n//# sourceURL=webpack:///./src/app.js?");
+
+/***/ }),
+
+/***/ "./src/assets/1.jpg":
+/*!**************************!*\
+  !*** ./src/assets/1.jpg ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("module.exports = __webpack_require__.p + \"assets/img/1.d3b9.jpg\";\n\n//# sourceURL=webpack:///./src/assets/1.jpg?");
 
 /***/ }),
 

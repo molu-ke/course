@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>图片等资源的处理</title>
-</head>
-<body>
-    <div id='mydiv' class="div1"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body>
+    <div id="mydiv" class="div1"></div>
     <div class="div1 img1"></div>
     <div class="div1 img2"></div>
-</body>
+    <div class="div1 img3"></div>
+    <!-- <img src="./assets/3.png" alt="" class="img4"> 直接引用打包后，会找不到资源 -->
+    <!-- 方法一  html里面使用模板引擎ejs -->
+    <!-- <img class="img4" src="<%= require('./assets/3.png') %>" /> -->
+    <!-- 方法二 html-loader-->
+    <img src="./assets/3.png" alt="" class="img4">
+  </body>
 </html>

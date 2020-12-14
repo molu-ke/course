@@ -1,7 +1,10 @@
-.div1{
+.div1,.img4{
     width:200px;
     height:200px;
     border:1px solid red;
+}
+.div1 img{
+    width:100%;
 }
 .img1{
     background:url('../assets/1.jpg') no-repeat;
@@ -9,5 +12,9 @@
 }
 .img2{
     background:url('../assets/2.jpg') no-repeat;
+    background-size:cover;
+}
+.img3{
+    background:url('../assets/3.png') no-repeat;
     background-size:cover;
 }
