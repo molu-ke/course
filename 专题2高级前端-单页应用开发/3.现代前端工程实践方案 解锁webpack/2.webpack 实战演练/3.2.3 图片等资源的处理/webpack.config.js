@@ -11,14 +11,8 @@ module.exports = {
     output:{
       path:__dirname+'/dist',
       filename:'./[name].bundle.js',
-      // publicPath:'xxxxx',
+      // publicPath:'xxxxx', // 引入文件的路径修改
     },
-    // 我也不知道下面的是干啥的
-    // resolve:{
-    //   alias:{
-    //     a2:"./js/app2.js"
-    //   }
-    // },
     module:{
       rules:[
         {
@@ -57,7 +51,7 @@ module.exports = {
               options:{
                 name:'[name].[hash:4].[ext]',
                 outputPath:'assets/img',
-                // publicPath:"assets/img",
+                publicPath:"assets/img",
                 // 5kb
                 limit:'5000', // 图片<5kb 转base64
               }
@@ -95,10 +89,21 @@ module.exports = {
                     tag: 'img',
                     attribute: 'src',
                     type: 'src',
+                  },
+                  {
+                    tag: 'video',
+                    attribute: 'src',
+                    type: 'src',
                   }
                 ]
               }
             }
+          }
+        },
+        {
+          test:/\.mp4$/,
+          use:{
+            loader:'url-loader'
           }
         }
 

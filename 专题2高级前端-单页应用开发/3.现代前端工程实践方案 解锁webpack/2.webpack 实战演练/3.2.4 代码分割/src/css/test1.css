@@ -1,0 +1,8 @@
+.div1,.img4{
+    width:200px;
+    height:200px;
+    border:1px solid red;
+}
+.div1 img{
+    width:100%;
+}

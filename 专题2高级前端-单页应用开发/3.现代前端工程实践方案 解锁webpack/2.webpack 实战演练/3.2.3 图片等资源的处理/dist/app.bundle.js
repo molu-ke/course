@@ -103,9 +103,9 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _css
   !*** ./src/assets/1.jpg ***!
   \**************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-eval("module.exports = __webpack_require__.p + \"assets/img/1.d3b9.jpg\";\n\n//# sourceURL=webpack:///./src/assets/1.jpg?");
+eval("module.exports = \"assets/img/aa/1.d3b9.jpg\";\n\n//# sourceURL=webpack:///./src/assets/1.jpg?");
 
 /***/ }),
 
