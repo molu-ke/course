@@ -76,7 +76,7 @@ class Game {
     };
     createEnemy();
     // 增加游戏难度
-    this.enemyTimer = setInterval(createEnemy, 1500);
+    this.enemyTimer = setInterval(createEnemy, 1000);
   }
   /**
    * 开启控制监听

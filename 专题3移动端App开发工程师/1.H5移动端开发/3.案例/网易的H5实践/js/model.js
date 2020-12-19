@@ -68,8 +68,8 @@ export class Plane extends Model {
   constructor(game) {
     super({
       game,
-      vx: 5,
-      vy: 5,
+      vx: 5, // 初始速度
+      vy: 5, // 初始速度
       name: "plane"
     });
     // 发射子弹
@@ -190,7 +190,7 @@ export class Enemy extends Model {
     //继承 父类的构造器执行一遍
     super({
       game,
-      vy: 1,
+      vy: 1, // 加速度
       name: "enemy"
     });
     this.enemyType = this.createType();
@@ -220,8 +220,8 @@ export class Bullet extends Model {
   constructor(game, plane) {
     super({
       game,
-      vy: 5,
-      ay: 0.5,
+      vy: 5, // 初始速度
+      ay: 0.5, // 加速度
       name: "bullet"
     });
     this.render(template.bullet);
