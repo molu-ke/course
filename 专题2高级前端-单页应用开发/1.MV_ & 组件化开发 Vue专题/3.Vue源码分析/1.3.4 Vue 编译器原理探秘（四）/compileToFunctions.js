@@ -5,9 +5,9 @@
         // modules: modules$1,
         // directives: directives$1,
         // isPreTag: isPreTag,
-        // isUnaryTag: isUnaryTag,
+        isUnaryTag: isUnaryTag,
         // mustUseProp: mustUseProp,
-        // canBeLeftOpenTag: canBeLeftOpenTag,
+        canBeLeftOpenTag: canBeLeftOpenTag,
         // isReservedTag: isReservedTag,
         // getTagNamespace: getTagNamespace,
         // staticKeys: genStaticKeys(modules$1)
@@ -16,22 +16,22 @@
     var inBrowser = typeof window !== 'undefined';
     var UA = inBrowser && window.navigator.userAgent.toLowerCase();
     var isIE = UA && /msie|trident/.test(UA);
-    function isTextTag (el) {
+    function isTextTag(el) {
         return el.tag === 'script' || el.tag === 'style'
     }
     var decoder;
     var he = {
-        decode: function decode (html) {
-          decoder = decoder || document.createElement('div');
-          decoder.innerHTML = html;
-          return decoder.textContent
+        decode: function decode(html) {
+            decoder = decoder || document.createElement('div');
+            decoder.innerHTML = html;
+            return decoder.textContent
         }
     };
-    function cached (fn) {
+    function cached(fn) {
         var cache = Object.create(null);
-        return (function cachedFn (str) {
-          var hit = cache[str];
-          return hit || (cache[str] = fn(str))
+        return (function cachedFn(str) {
+            var hit = cache[str];
+            return hit || (cache[str] = fn(str))
         })
     }
     var decodeHTMLCached = cached(he.decode);
@@ -166,6 +166,7 @@
                 // ast  render  staticRenderFns
                 var compiled = baseCompile(template, finalOptions); // 真正编译器入口
                 {
+                    // 通过抽象语法树来检查模板中是否存在错误表达式的
                     errors.push.apply(errors, detectErrors(compiled.ast));
                 }
                 compiled.errors = errors;
@@ -188,9 +189,9 @@
         optimize(ast, options);  // 标注静态节点
         var code = generate(ast, options); // 产出渲染函数所需的字符串
         return {
-            ast: ast,
-            render: code.render,
-            staticRenderFns: code.staticRenderFns
+            ast: ast, // 抽象语法
+            render: code.render, // 渲染函数
+            staticRenderFns: code.staticRenderFns // 静态渲染函数
         }
     });
 
@@ -203,6 +204,23 @@
     var no = function () {
         return false
     }
+
+    var isUnaryTag = makeMap(
+        'area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' +
+        'link,meta,param,source,track,wbr'
+    );
+
+    var isNonPhrasingTag = makeMap(
+        'address,article,aside,base,blockquote,body,caption,col,colgroup,dd,' +
+        'details,dialog,div,dl,dt,fieldset,figcaption,figure,footer,form,' +
+        'h1,h2,h3,h4,h5,h6,head,header,hgroup,hr,html,legend,li,menuitem,meta,' +
+        'optgroup,option,param,rp,rt,source,style,summary,tbody,td,tfoot,th,thead,' +
+        'title,tr,track'
+    );
+
+    var canBeLeftOpenTag = makeMap(
+        'colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr,source'
+      );
 
     function makeMap(str, expectsLowerCase) {
         var map = Object.create(null);
@@ -217,15 +235,15 @@
 
     var isPlainTextElement = makeMap('script,style,textarea', true);
 
-    var attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/;
-    var ncname = '[a-zA-Z_][\\w\\-\\.]*';
-    var qnameCapture = "((?:" + ncname + "\\:)?" + ncname + ")";
-    var startTagOpen = new RegExp(("^<" + qnameCapture));
-    var startTagClose = /^\s*(\/?)>/;
-    var endTag = new RegExp(("^<\\/" + qnameCapture + "[^>]*>"));
-    var doctype = /^<!DOCTYPE [^>]+>/i;
-    var comment = /^<!--/;
-    var conditionalComment = /^<!\[/;
+    var attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/; // 匹配标签的属性
+    var ncname = '[a-zA-Z_][\\w\\-\\.]*'; // 识别合法的xml标签
+    var qnameCapture = "((?:" + ncname + "\\:)?" + ncname + ")"; // 通过字符串来拼接正则模式让代码更具有复用性
+    var startTagOpen = new RegExp(("^<" + qnameCapture)); // 匹配开始标签 <div></div>的话会匹配到 <div
+    var startTagClose = /^\s*(\/?)>/; // 检测标签是否为单标签 。 例如：<img / > 此处需结合源码上下文分析
+    var endTag = new RegExp(("^<\\/" + qnameCapture + "[^>]*>")); // 匹配结束标签
+    var doctype = /^<!DOCTYPE [^>]+>/i; // 匹配<!DOCTYPE> 声明标签
+    var comment = /^<!--/; // 匹配注释
+    var conditionalComment = /^<!\[/; // 匹配条件注释
 
     function makeAttrsMap(attrs) {
         var map = {};
@@ -265,125 +283,125 @@
         return new RegExp(open + '((?:.|\\n)+?)' + close, 'g')
     });
 
-    function parseText (text, delimiters) {
+    function parseText(text, delimiters) {
         // 动态值的捕获
         var tagRE = delimiters ? buildRegex(delimiters) : defaultTagRE;
         if (!tagRE.test(text)) {
-          return
+            return
         }
 
         var tokens = [];
         var rawTokens = [];
         var lastIndex = tagRE.lastIndex = 0;
-        var match, index,tokenValue;
+        var match, index, tokenValue;
 
         // 因存在索引下标，所以不会进入死循环
         while ((match = tagRE.exec(text))) {
-        //   console.log('文本',text,'索引下标',tagRE.lastIndex,'匹配的值',match,lastIndex)
+            //   console.log('文本',text,'索引下标',tagRE.lastIndex,'匹配的值',match,lastIndex)
 
-          index = match.index;
-          // push text token  当文本是：this is code {{message}}时，index会大于lastIndex
-          if (index > lastIndex) {
-            // 把双花括号的前面静态文本截取出来
-            rawTokens.push(tokenValue = text.slice(lastIndex,index)) 
-            tokens.push(JSON.stringify(tokenValue));
-          }
-          //   tag token   处理双花括号中的过滤器 {{ | }}  先不说
-          //   var exp = parseFilters(match[1].trim());
-          var exp = match[1].trim();
-          tokens.push(("_s(" + exp + ")"));
-          rawTokens.push({
-              '@binding':exp
-          })
+            index = match.index;
+            // push text token  当文本是：this is code {{message}}时，index会大于lastIndex
+            if (index > lastIndex) {
+                // 把双花括号的前面静态文本截取出来
+                rawTokens.push(tokenValue = text.slice(lastIndex, index))
+                tokens.push(JSON.stringify(tokenValue));
+            }
+            //   tag token   处理双花括号中的过滤器 {{ | }}  先不说
+            //   var exp = parseFilters(match[1].trim());
+            var exp = match[1].trim();
+            tokens.push(("_s(" + exp + ")"));
+            rawTokens.push({
+                '@binding': exp
+            })
 
-          lastIndex = index + match[0].length; // 13 + {{message}}.lenth
+            lastIndex = index + match[0].length; // 13 + {{message}}.lenth
         }
         // 把双花括号的后面静态文本截取出来
         if (lastIndex < text.length) {
-            rawTokens.push(tokenValue = text.slice(lastIndex)) 
+            rawTokens.push(tokenValue = text.slice(lastIndex))
             tokens.push(JSON.stringify(tokenValue));
         }
         return {
-            expression:tokens.join('+'),
-            tokens:rawTokens
+            expression: tokens.join('+'),
+            tokens: rawTokens
         }
-      }
+    }
 
-    
+
 
     function parse(template, options) {
         // 第一次  root,currentParent  = 根节点的描述对象   stack = [根节点的描述对象]
         var currentParent, root,
             stack = [],
-            inPre=false,
+            inPre = false,
             inVPre = false;;
         var preserveWhitespace = options.preserveWhitespace !== false;
         delimiters = options.delimiters;
         parseHTML(template, {
             // 解析开始标签调用的钩子函数
             start: function (tag, attrs, unary) {
-               
+
                 var element = createASTElement(tag, attrs, currentParent);
 
-                function checkRootConstraints (el) {
+                function checkRootConstraints(el) {
                     {
-                      if (el.tag === 'slot' || el.tag === 'template') {
-                        warnOnce(
-                          "Cannot use <" + (el.tag) + "> as component root element because it may " +
-                          'contain multiple nodes.'
-                        );
-                      }
-                      if (el.attrsMap.hasOwnProperty('v-for')) {
-                        warnOnce(
-                          'Cannot use v-for on stateful component root element because ' +
-                          'it renders multiple elements.'
-                        );
-                      }
+                        if (el.tag === 'slot' || el.tag === 'template') {
+                            warnOnce(
+                                "Cannot use <" + (el.tag) + "> as component root element because it may " +
+                                'contain multiple nodes.'
+                            );
+                        }
+                        if (el.attrsMap.hasOwnProperty('v-for')) {
+                            warnOnce(
+                                'Cannot use v-for on stateful component root element because ' +
+                                'it renders multiple elements.'
+                            );
+                        }
                     }
-                  }
-            
-                  // tree management  root 存储根节点的描述对象
-                  if (!root) {
+                }
+
+                // tree management  root 存储根节点的描述对象
+                if (!root) {
                     root = element;
                     checkRootConstraints(root); // 检测根节点的规范性
-                  } else if (!stack.length) {
+                } else if (!stack.length) {
                     // allow root elements with v-if, v-else-if and v-else
                     if (root.if && (element.elseif || element.else)) {
-                      checkRootConstraints(element);
-                      addIfCondition(root, {
-                        exp: element.elseif,
-                        block: element
-                      });
+                        checkRootConstraints(element);
+                        addIfCondition(root, {
+                            exp: element.elseif,
+                            block: element
+                        });
                     } else {
-                      warnOnce(
-                        "Component template should contain exactly one root element. " +
-                        "If you are using v-if on multiple elements, " +
-                        "use v-else-if to chain them instead."
-                      );
+                        warnOnce(
+                            "Component template should contain exactly one root element. " +
+                            "If you are using v-if on multiple elements, " +
+                            "use v-else-if to chain them instead."
+                        );
                     }
-                  }
+                }
 
-                  if (currentParent && !element.forbidden) { //  !element.forbidden => true
+                if (currentParent && !element.forbidden) { //  !element.forbidden => true
                     if (element.elseif || element.else) {
-                      processIfConditions(element, currentParent);
+                        processIfConditions(element, currentParent);
                     } else if (element.slotScope) { // scoped slot
-                      currentParent.plain = false;
-                      var name = element.slotTarget || '"default"';(currentParent.scopedSlots || (currentParent.scopedSlots = {}))[name] = element;
+                        currentParent.plain = false;
+                        var name = element.slotTarget || '"default"'; (currentParent.scopedSlots || (currentParent.scopedSlots = {}))[name] = element;
                     } else {
-                      currentParent.children.push(element); // 描述html字符串的子父级关系
-                      element.parent = currentParent;
+                        currentParent.children.push(element); // 描述html字符串的子父级关系
+                        element.parent = currentParent;
                     }
-                  }
-       
+                }
 
-                  if (!unary) {
+
+                if (!unary) {
                     currentParent = element;
                     stack.push(element);
-                  } else {
+                } else {
                     // endPre(element);
-                  }
+                }
             },
-             // 解析结束标签的钩子函数
+            // 解析结束标签的钩子函数
             end: function () {
                 //  删除尾随空格  <div>     </div>
                 var element = stack[stack.length - 1];
@@ -394,20 +412,20 @@
                 // 修正后续解析的开始标签的父标签描述对象引用
                 stack.length -= 1;
                 currentParent = stack[stack.length - 1];
-             
+
             },
             // 解析文本调用的钩子函数
             chars: function (text) {
                 if (!currentParent) {
                     {
                         if (text === template) {
-                        warnOnce(
-                            'Component template requires a root element, rather than just text.'
-                        );
+                            warnOnce(
+                                'Component template requires a root element, rather than just text.'
+                            );
                         } else if ((text = text.trim())) {
-                        warnOnce(
-                            ("text \"" + text + "\" outside root element will be ignored.")
-                        );
+                            warnOnce(
+                                ("text \"" + text + "\" outside root element will be ignored.")
+                            );
                         }
                     }
                     return
@@ -423,31 +441,31 @@
                 var children = currentParent.children;
 
                 text = inPre || text.trim()
-                ? isTextTag(currentParent) ? text : decodeHTMLCached(text) // 解码的操作
-                // only preserve whitespace if its not right after a starting tag
-                : preserveWhitespace && children.length ? ' ' : '';
+                    ? isTextTag(currentParent) ? text : decodeHTMLCached(text) // 解码的操作
+                    // only preserve whitespace if its not right after a starting tag
+                    : preserveWhitespace && children.length ? ' ' : '';
 
                 // {{meaaste}}
                 if (text) {
                     var res;
                     // 动态文本节点
                     if (!inVPre && text !== ' ' && (res = parseText(text, delimiters))) {
-                      children.push({
-                        type: 2,
-                        expression: res.expression,
-                        tokens:res.tokens,
-                        text: text
-                      });
-                    } 
+                        children.push({
+                            type: 2,
+                            expression: res.expression,
+                            tokens: res.tokens,
+                            text: text
+                        });
+                    }
                     // 静态文本节点
                     else if (text !== ' ' || !children.length || children[children.length - 1].text !== ' ') {
-                      children.push({
-                        type: 3,
-                        text: text
-                      });
+                        children.push({
+                            type: 3,
+                            text: text
+                        });
                     }
-                  }
-              
+                }
+
             },
             comment: function () {
                 console.log('解析注释的钩子函数')
@@ -465,7 +483,7 @@
         var canBeLeftOpenTag$$1 = options.canBeLeftOpenTag || no; // 编译器内置配置  检测一个标签是否是可以省略闭合标签的非一元标签
         var index = 0; // 解析html字符串时字符流读入的位置
         var last, lastTag; // last存储还未解析的html字符串   lastTag始终存储stack栈顶的元素
-
+        console.log(html)
         while (html) {
             last = html;
             if (!lastTag || !isPlainTextElement(lastTag)) { // 第一次进入循环   根元素的开始标签
@@ -561,15 +579,14 @@
             var tagName = match.tagName;
             var unarySlash = match.unarySlash;
 
-            // 先不管
-            // if (expectHTML) {
-            //     if (lastTag === 'p' && isNonPhrasingTag(tagName)) {
-            //         parseEndTag(lastTag);
-            //     }
-            //     if (canBeLeftOpenTag$$1(tagName) && lastTag === tagName) {
-            //         parseEndTag(tagName);
-            //     }
-            // }
+            if (expectHTML) {
+                if (lastTag === 'p' && isNonPhrasingTag(tagName)) {
+                    parseEndTag(lastTag);
+                }
+                if (canBeLeftOpenTag$$1(tagName) && lastTag === tagName) {
+                    parseEndTag(tagName);
+                }
+            }
 
             var unary = isUnaryTag$$1(tagName) || !!unarySlash;
             var l = match.attrs.length;
@@ -599,7 +616,7 @@
         }
 
         function parseEndTag(tagName, start, end) {
-            var pos, lowerCasedTagName;
+            var pos, lowerCasedTagName; //  pos判断 html 字符串是否缺少结束标签    lowerCasedTagName存储 tagName 的小写版 
             if (start == null) { start = index; }
             if (end == null) { end = index; }
 
@@ -613,7 +630,7 @@
             } else {
                 pos = 0;
             }
-
+            // 当pos >= 0 就代表结束标签能在stack中找到
             if (pos >= 0) {
                 for (var i = stack.length - 1; i >= pos; i--) {
                     if ((i > pos || !tagName) && options.warn) {
@@ -625,9 +642,12 @@
                         options.end(stack[i].tag, start, end);
                     }
                 }
+                // 更新 stack 栈以及 lastTag
                 stack.length = pos;
                 lastTag = pos && stack[pos - 1].tag;
 
+            // 找不到就代表不存在 但要特殊处理br p
+            // 因为</br> 和 </p> 标签浏览器可以将其正常解析为 <br> 以及<p></p>，Vue 的 parser 与浏览器的行为是一致的
             } else if (lowerCasedTagName === 'br') {
                 if (options.start) {
                     options.start(tagName, [], true, start, end);
@@ -640,6 +660,7 @@
                     options.end(tagName, start, end);
                 }
             }
+            // 其他情况不处理  像 <div></h2></div>
         }
     }
 
