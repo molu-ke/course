@@ -210,6 +210,7 @@
         'link,meta,param,source,track,wbr'
     );
 
+    // 非段落式内容
     var isNonPhrasingTag = makeMap(
         'address,article,aside,base,blockquote,body,caption,col,colgroup,dd,' +
         'details,dialog,div,dl,dt,fieldset,figcaption,figure,footer,form,' +
@@ -334,7 +335,7 @@
         var currentParent, root,
             stack = [],
             inPre = false,
-            inVPre = false;;
+            inVPre = false;
         var preserveWhitespace = options.preserveWhitespace !== false;
         delimiters = options.delimiters;
         parseHTML(template, {
@@ -467,8 +468,13 @@
                 }
 
             },
+            // 解析注释的钩子函数
             comment: function () {
-                console.log('解析注释的钩子函数')
+                currentParent.children.push({
+                    type: 3,
+                    text: text,
+                    isComment: true
+                });
             },
         })
 
@@ -483,11 +489,10 @@
         var canBeLeftOpenTag$$1 = options.canBeLeftOpenTag || no; // 编译器内置配置  检测一个标签是否是可以省略闭合标签的非一元标签
         var index = 0; // 解析html字符串时字符流读入的位置
         var last, lastTag; // last存储还未解析的html字符串   lastTag始终存储stack栈顶的元素
-        console.log(html)
         while (html) {
             last = html;
             if (!lastTag || !isPlainTextElement(lastTag)) { // 第一次进入循环   根元素的开始标签
-                var textEnd = html.indexOf('<');  // 1：等于0   2：小于0   3：大于0   
+                var textEnd = html.indexOf('<');  // 1：等于0   2：小于0(-1)   3：大于0   
                 if (textEnd === 0) {
                     // End tag:
                     var endTagMatch = html.match(endTag);
@@ -514,7 +519,8 @@
                 var text = (void 0), rest = (void 0), next = (void 0);
                 if (textEnd >= 0) {
                     rest = html.slice(textEnd); // 剩余需要解析的文本 </div>  
-                    while ( // 当rest不是文本、标签、注释
+                     // 不符合标签的格式规则  当rest不是标签、注释  为了解决 a < b 这种情况
+                    while (
                         !endTag.test(rest) &&
                         !startTagOpen.test(rest) &&
                         !comment.test(rest) &&
@@ -578,11 +584,12 @@
         function handleStartTag(match) {
             var tagName = match.tagName;
             var unarySlash = match.unarySlash;
-
             if (expectHTML) {
+                // <p><h1></h1></p>   ==>    <p></p><h2></h2><p></p>
                 if (lastTag === 'p' && isNonPhrasingTag(tagName)) {
                     parseEndTag(lastTag);
                 }
+                // 当前正在解析的标签是一个可以省略结束标签的非一元标签，并且与上一次解析到的开始标签相同
                 if (canBeLeftOpenTag$$1(tagName) && lastTag === tagName) {
                     parseEndTag(tagName);
                 }
@@ -609,7 +616,6 @@
                 });
                 lastTag = tagName;
             }
-
             if (options.start) {
                 options.start(tagName, attrs, unary, match.start, match.end);
             }
