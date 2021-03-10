@@ -1,17 +1,104 @@
 (function (root) {
-    // 默认配置项
-    var baseOptions = {
-        // expectHTML: true,
-        // modules: modules$1,
-        // directives: directives$1,
-        // isPreTag: isPreTag,
-        isUnaryTag: isUnaryTag,
-        // mustUseProp: mustUseProp,
-        canBeLeftOpenTag: canBeLeftOpenTag,
-        // isReservedTag: isReservedTag,
-        // getTagNamespace: getTagNamespace,
-        // staticKeys: genStaticKeys(modules$1)
+
+    var attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/; // 匹配标签的属性
+    var ncname = '[a-zA-Z_][\\w\\-\\.]*'; // 识别合法的xml标签
+    var qnameCapture = "((?:" + ncname + "\\:)?" + ncname + ")"; // 通过字符串来拼接正则模式让代码更具有复用性
+    var startTagOpen = new RegExp(("^<" + qnameCapture)); // 匹配开始标签 <div></div>的话会匹配到 <div
+    var startTagClose = /^\s*(\/?)>/; // 检测标签是否为单标签 。 例如：<img / > 此处需结合源码上下文分析
+    var endTag = new RegExp(("^<\\/" + qnameCapture + "[^>]*>")); // 匹配结束标签
+    var doctype = /^<!DOCTYPE [^>]+>/i; // 匹配<!DOCTYPE> 声明标签
+    var comment = /^<!--/; // 匹配注释
+    var conditionalComment = /^<!\[/; // 匹配条件注释
+
+
+    // 解析模块  怎么去生成AST对象的
+    var no = function () {
+        return false
+    }
+
+    var isUnaryTag = makeMap(
+        'area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' +
+        'link,meta,param,source,track,wbr'
+    );
+
+    // 非段落式内容
+    var isNonPhrasingTag = makeMap(
+        'address,article,aside,base,blockquote,body,caption,col,colgroup,dd,' +
+        'details,dialog,div,dl,dt,fieldset,figcaption,figure,footer,form,' +
+        'h1,h2,h3,h4,h5,h6,head,header,hgroup,hr,html,legend,li,menuitem,meta,' +
+        'optgroup,option,param,rp,rt,source,style,summary,tbody,td,tfoot,th,thead,' +
+        'title,tr,track'
+    );
+
+
+    var isHTMLTag = makeMap(
+        'html,body,base,head,link,meta,style,title,' +
+        'address,article,aside,footer,header,h1,h2,h3,h4,h5,h6,hgroup,nav,section,' +
+        'div,dd,dl,dt,figcaption,figure,picture,hr,img,li,main,ol,p,pre,ul,' +
+        'a,b,abbr,bdi,bdo,br,cite,code,data,dfn,em,i,kbd,mark,q,rp,rt,rtc,ruby,' +
+        's,samp,small,span,strong,sub,sup,time,u,var,wbr,area,audio,map,track,video,' +
+        'embed,object,param,source,canvas,script,noscript,del,ins,' +
+        'caption,col,colgroup,table,thead,tbody,td,th,tr,' +
+        'button,datalist,fieldset,form,input,label,legend,meter,optgroup,option,' +
+        'output,progress,select,textarea,' +
+        'details,dialog,menu,menuitem,summary,' +
+        'content,element,shadow,template,blockquote,iframe,tfoot'
+    );
+
+    var isSVG = makeMap(
+        'svg,animate,circle,clippath,cursor,defs,desc,ellipse,filter,font-face,' +
+        'foreignObject,g,glyph,image,line,marker,mask,missing-glyph,path,pattern,' +
+        'polygon,polyline,rect,switch,symbol,text,textpath,tspan,use,view',
+        true
+    );
+
+    var isPreTag = function (tag) { return tag === 'pre'; };
+
+    var isReservedTag = function (tag) {
+        return isHTMLTag(tag) || isSVG(tag)
     };
+
+    var isBuiltInTag = makeMap('slot,component', true);
+
+    var canBeLeftOpenTag = makeMap(
+        'colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr,source'
+    );
+
+    function genStaticKeys$1(keys) {
+        return makeMap(
+            'type,tag,attrsList,attrsMap,plain,parent,children,attrs' +
+            (keys ? ',' + keys : '')
+        )
+    }
+
+    function makeMap(str, expectsLowerCase) {
+        var map = Object.create(null);
+        var list = str.split(',');
+        for (var i = 0; i < list.length; i++) {
+            map[list[i]] = true;
+        }
+        return expectsLowerCase
+            ? function (val) { return map[val.toLowerCase()]; }
+            : function (val) { return map[val]; }
+    }
+
+    var isPlainTextElement = makeMap('script,style,textarea', true);
+
+
+    function makeAttrsMap(attrs) {
+        var map = {};
+        for (var i = 0, l = attrs.length; i < l; i++) {
+            if (
+                "development" !== 'production' &&
+                map[attrs[i].name] && !isIE && !isEdge
+            ) {
+                warn$2('duplicate attribute: ' + attrs[i].name);
+            }
+            map[attrs[i].name] = attrs[i].value;
+        }
+        return map
+    }
+
 
     var inBrowser = typeof window !== 'undefined';
     var UA = inBrowser && window.navigator.userAgent.toLowerCase();
@@ -35,6 +122,225 @@
         })
     }
     var decodeHTMLCached = cached(he.decode);
+
+    var parseStyleText = cached(function (cssText) {
+        var res = {};
+        var listDelimiter = /;(?![^(]*\))/g;
+        var propertyDelimiter = /:(.+)/;
+        cssText.split(listDelimiter).forEach(function (item) {
+          if (item) {
+            var tmp = item.split(propertyDelimiter);
+            tmp.length > 1 && (res[tmp[0].trim()] = tmp[1].trim());
+          }
+        });
+        return res
+      });
+
+    function getBindingAttr (el, name,getStatic) {
+        var dynamicValue =
+          getAndRemoveAttr(el, ':' + name) ||
+          getAndRemoveAttr(el, 'v-bind:' + name);
+        if (dynamicValue != null) {
+          return parseFilters(dynamicValue)
+        } else if (getStatic !== false) {
+          var staticValue = getAndRemoveAttr(el, name);
+          if (staticValue != null) {
+            return JSON.stringify(staticValue)
+          }
+        }
+      }
+
+    function getAndRemoveAttr(el,name,removeFromMap) {
+        var val;
+        if ((val = el.attrsMap[name]) != null) {
+            var list = el.attrsList;
+            for (var i = 0, l = list.length; i < l; i++) {
+                if (list[i].name === name) {
+                    list.splice(i, 1);
+                    break
+                }
+            }
+        }
+        if (removeFromMap) {
+            delete el.attrsMap[name];
+        }
+        return val
+    }
+
+    function transformNode(el, options) {
+        var warn = options.warn || baseWarn;
+        var staticClass = getAndRemoveAttr(el, 'class');
+        if ("development" !== 'production' && staticClass) {
+            // 解析成功则说明你在非绑定的class属性中使用了字面量表达式
+            // <div class="{{ message ? 'message' : '' }}"></div>
+            var expression = parseText(staticClass, options.delimiters);
+            if (expression) {
+                warn(
+                    "class=\"" + staticClass + "\": " +
+                    'Interpolation inside attributes has been removed. ' +
+                    'Use v-bind or the colon shorthand instead. For example, ' +
+                    'instead of <div class="{{ val }}">, use <div :class="val">.'
+                );
+            }
+        }
+        if (staticClass) {
+            // <div class="box"></div>  -->   el.staticClass = JSON.stringify("box")
+            el.staticClass = JSON.stringify(staticClass);
+        }
+        // <div :class="{ 'message': message }"></div>  -->  el.classBinding = "{ 'message': message }"
+        var classBinding = getBindingAttr(el, 'class', false /* getStatic */);
+        if (classBinding) {
+            el.classBinding = classBinding;
+        }
+    }
+
+    function genData(el) {
+        var data = '';
+        if (el.staticClass) {
+            data += "staticClass:" + (el.staticClass) + ",";
+        }
+        if (el.classBinding) {
+            data += "class:" + (el.classBinding) + ",";
+        }
+        return data
+    }
+
+    var klass$1 = {
+        staticKeys: ['staticClass'],
+        transformNode: transformNode,
+        genData: genData
+    };
+
+    function transformNode$1 (el, options) {
+        var warn = options.warn || baseWarn;
+        var staticStyle = getAndRemoveAttr(el, 'style');
+        if (staticStyle) {
+          /* istanbul ignore if */
+          {
+            var expression = parseText(staticStyle, options.delimiters);
+            if (expression) {
+              warn(
+                "style=\"" + staticStyle + "\": " +
+                'Interpolation inside attributes has been removed. ' +
+                'Use v-bind or the colon shorthand instead. For example, ' +
+                'instead of <div style="{{ val }}">, use <div :style="val">.'
+              );
+            }
+          }
+          // <div style="color: red; background: green;"></div>
+          // { color: 'red', background: 'green }
+          el.staticStyle = JSON.stringify(parseStyleText(staticStyle));
+        }
+      
+        // <div :style="{ fontSize: fontSize + 'px' }"></div>
+        // el.styleBinding = "{ fontSize: fontSize + 'px' }"
+        var styleBinding = getBindingAttr(el, 'style', false /* getStatic */);
+        if (styleBinding) {
+          el.styleBinding = styleBinding;
+        }
+      }
+      
+      function genData$1 (el) {
+        var data = '';
+        if (el.staticStyle) {
+          data += "staticStyle:" + (el.staticStyle) + ",";
+        }
+        if (el.styleBinding) {
+          data += "style:(" + (el.styleBinding) + "),";
+        }
+        return data
+      }
+
+    var style$1 = {
+        staticKeys: ['staticStyle'],
+        transformNode: transformNode$1,
+        genData: genData$1
+    };
+
+    /**
+     * Expand input[v-model] with dyanmic type bindings into v-if-else chains
+     * Turn this:
+     *   <input v-model="data[type]" :type="type">
+     * into this:
+     *   <input v-if="type === 'checkbox'" type="checkbox" v-model="data[type]">
+     *   <input v-else-if="type === 'radio'" type="radio" v-model="data[type]">
+     *   <input v-else :type="type" v-model="data[type]">
+     */
+
+    function preTransformNode(el, options) {
+        if (el.tag === 'input') {
+            var map = el.attrsMap;
+            if (map['v-model'] && (map['v-bind:type'] || map[':type'])) {
+                var typeBinding = getBindingAttr(el, 'type');
+                var ifCondition = getAndRemoveAttr(el, 'v-if', true);
+                var ifConditionExtra = ifCondition ? ("&&(" + ifCondition + ")") : "";
+                // 1. checkbox
+                var branch0 = cloneASTElement(el);
+                // process for on the main node
+                processFor(branch0);
+                addRawAttr(branch0, 'type', 'checkbox');
+                processElement(branch0, options);
+                branch0.processed = true; // prevent it from double-processed
+                branch0.if = "(" + typeBinding + ")==='checkbox'" + ifConditionExtra;
+                addIfCondition(branch0, {
+                    exp: branch0.if,
+                    block: branch0
+                });
+                // 2. add radio else-if condition
+                var branch1 = cloneASTElement(el);
+                getAndRemoveAttr(branch1, 'v-for', true);
+                addRawAttr(branch1, 'type', 'radio');
+                processElement(branch1, options);
+                addIfCondition(branch0, {
+                    exp: "(" + typeBinding + ")==='radio'" + ifConditionExtra,
+                    block: branch1
+                });
+                // 3. other
+                var branch2 = cloneASTElement(el);
+                getAndRemoveAttr(branch2, 'v-for', true);
+                addRawAttr(branch2, ':type', typeBinding);
+                processElement(branch2, options);
+                addIfCondition(branch0, {
+                    exp: ifCondition,
+                    block: branch2
+                });
+                return branch0
+            }
+        }
+    }
+
+    function cloneASTElement(el) {
+        return createASTElement(el.tag, el.attrsList.slice(), el.parent)
+    }
+
+    function addRawAttr(el, name, value) {
+        el.attrsMap[name] = value;
+        el.attrsList.push({ name: name, value: value });
+    }
+
+    var model$2 = {
+        preTransformNode: preTransformNode
+    };
+
+    var modules$1 = [
+        klass$1,
+        style$1,
+        model$2
+    ];
+
+    // 默认配置项
+    var baseOptions = {
+        // expectHTML: true,
+        modules: modules$1,
+        // directives: directives$1,
+        // isPreTag: isPreTag,
+        isUnaryTag: isUnaryTag,
+        // mustUseProp: mustUseProp,
+        canBeLeftOpenTag: canBeLeftOpenTag,
+        isReservedTag: isReservedTag,
+        // getTagNamespace: getTagNamespace,
+        // staticKeys: genStaticKeys(modules$1)
+    };
 
     // 渲染函数
     function createFunction(code, errors) {
@@ -140,7 +446,6 @@
                 finalOptions.warn = function (msg, tip) { //  warn("xxxxxxx",true)  收集 错误  警告信息 
                     (tip ? tips : errors).push(msg);
                 };
-
                 if (options) {
                     // 动态的绑定
                     if (options.modules) {
@@ -185,8 +490,8 @@
         options
     ) {
         var ast = parse(template.trim(), options); // 解析模析  产出AST对象（描述对象）
-        console.log(ast)
         optimize(ast, options);  // 标注静态节点
+        console.log(ast)
         var code = generate(ast, options); // 产出渲染函数所需的字符串
         return {
             ast: ast, // 抽象语法
@@ -199,76 +504,6 @@
 
     var ref$1 = createCompiler(baseOptions);
     var compileToFunctions = ref$1.compileToFunctions;
-
-    // 解析模块  怎么去生成AST对象的
-    var no = function () {
-        return false
-    }
-
-    var isUnaryTag = makeMap(
-        'area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' +
-        'link,meta,param,source,track,wbr'
-    );
-
-    // 非段落式内容
-    var isNonPhrasingTag = makeMap(
-        'address,article,aside,base,blockquote,body,caption,col,colgroup,dd,' +
-        'details,dialog,div,dl,dt,fieldset,figcaption,figure,footer,form,' +
-        'h1,h2,h3,h4,h5,h6,head,header,hgroup,hr,html,legend,li,menuitem,meta,' +
-        'optgroup,option,param,rp,rt,source,style,summary,tbody,td,tfoot,th,thead,' +
-        'title,tr,track'
-    );
-
-    var isBuiltInTag = makeMap('slot,component', true);
-
-    var canBeLeftOpenTag = makeMap(
-        'colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr,source'
-    );
-
-    function genStaticKeys$1 (keys) {
-        return makeMap(
-          'type,tag,attrsList,attrsMap,plain,parent,children,attrs' +
-          (keys ? ',' + keys : '')
-        )
-      }
-
-    function makeMap(str, expectsLowerCase) {
-        var map = Object.create(null);
-        var list = str.split(',');
-        for (var i = 0; i < list.length; i++) {
-            map[list[i]] = true;
-        }
-        return expectsLowerCase
-            ? function (val) { return map[val.toLowerCase()]; }
-            : function (val) { return map[val]; }
-    }
-
-    var isPlainTextElement = makeMap('script,style,textarea', true);
-
-    var attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/; // 匹配标签的属性
-    var ncname = '[a-zA-Z_][\\w\\-\\.]*'; // 识别合法的xml标签
-    var qnameCapture = "((?:" + ncname + "\\:)?" + ncname + ")"; // 通过字符串来拼接正则模式让代码更具有复用性
-    var startTagOpen = new RegExp(("^<" + qnameCapture)); // 匹配开始标签 <div></div>的话会匹配到 <div
-    var startTagClose = /^\s*(\/?)>/; // 检测标签是否为单标签 。 例如：<img / > 此处需结合源码上下文分析
-    var endTag = new RegExp(("^<\\/" + qnameCapture + "[^>]*>")); // 匹配结束标签
-    var doctype = /^<!DOCTYPE [^>]+>/i; // 匹配<!DOCTYPE> 声明标签
-    var comment = /^<!--/; // 匹配注释
-    var conditionalComment = /^<!\[/; // 匹配条件注释
-
-    function makeAttrsMap(attrs) {
-        var map = {};
-        for (var i = 0, l = attrs.length; i < l; i++) {
-            if (
-                "development" !== 'production' &&
-                map[attrs[i].name] && !isIE && !isEdge
-            ) {
-                warn$2('duplicate attribute: ' + attrs[i].name);
-            }
-            map[attrs[i].name] = attrs[i].value;
-        }
-        return map
-    }
-
 
     function createASTElement(tag, attrs, parent) {
         return {
@@ -699,73 +934,105 @@
         markStaticRoots(root, false);
     }
 
-    function markStatic$1 (node) {
+    function markStatic$1(node) {
         node.static = isStatic(node);
         if (node.type === 1) {
-          // do not make component slot content static. this avoids
-          // 1. components not able to mutate slot nodes
-          // 2. static slot content fails for hot-reloading
-          if (
-            !isPlatformReservedTag(node.tag) &&
-            node.tag !== 'slot' &&
-            node.attrsMap['inline-template'] == null
-          ) {
-            return
-          }
-          for (var i = 0, l = node.children.length; i < l; i++) {
-            var child = node.children[i];
-            markStatic$1(child);
-            if (!child.static) {
-              node.static = false;
+            // 非平台保留标签
+            // 标签节点是 slot
+            // 节点中有inline-template（内联模板）
+            if (
+                !isPlatformReservedTag(node.tag) &&
+                node.tag !== 'slot' &&
+                node.attrsMap['inline-template'] == null
+            ) {
+                return
             }
-          }
-          if (node.ifConditions) {
-            for (var i$1 = 1, l$1 = node.ifConditions.length; i$1 < l$1; i$1++) {
-              var block = node.ifConditions[i$1].block;
-              markStatic$1(block);
-              if (!block.static) {
-                node.static = false;
-              }
+            for (var i = 0, l = node.children.length; i < l; i++) {
+                var child = node.children[i];
+                markStatic$1(child);
+                // 如果某子节点不是静态节点，那么父节点就不能是静态节点
+                if (!child.static) {
+                    node.static = false;
+                }
             }
-          }
+            if (node.ifConditions) {
+                for (var i$1 = 1, l$1 = node.ifConditions.length; i$1 < l$1; i$1++) {
+                    var block = node.ifConditions[i$1].block;
+                    markStatic$1(block);
+                    if (!block.static) {
+                        node.static = false;
+                    }
+                }
+            }
         }
-      }
+    }
+
+    function markStaticRoots(node, isInFor) {
+        if (node.type === 1) {
+            if (node.static || node.once) {
+                node.staticInFor = isInFor;
+            }
+            // 一个节点要成为根节点，那么要满足以下条件：
+            // 1、静态节点，并且有子节点
+            // 2、子节点不能仅为一个文本节点
+            if (
+                node.static &&
+                node.children.length &&
+                !(node.children.length === 1 && node.children[0].type === 3)
+            ) {
+                node.staticRoot = true;
+                return
+            } else {
+                node.staticRoot = false;
+            }
+            if (node.children) {
+                for (var i = 0, l = node.children.length; i < l; i++) {
+                    markStaticRoots(node.children[i], isInFor || !!node.for);
+                }
+            }
+            if (node.ifConditions) {
+                for (var i$1 = 1, l$1 = node.ifConditions.length; i$1 < l$1; i$1++) {
+                    markStaticRoots(node.ifConditions[i$1].block, isInFor);
+                }
+            }
+        }
+    }
 
     function generate() {
 
     }
 
 
-    function isStatic (node) {
+    function isStatic(node) {
         // 节点类型为表达式，标注为非静态；普通文本为静态
         if (node.type === 2) { // expression
-          return false
+            return false
         }
         if (node.type === 3) { // text
-          return true
-        }
-        return !!(node.pre || (
-          !node.hasBindings && // 无动态绑定
-          !node.if && !node.for && // 没有 v-if 、 v-for、v-else
-          !isBuiltInTag(node.tag) && // 不是内置的标签
-          isPlatformReservedTag(node.tag) && // 是平台保留标签(html和svg标签)
-          !isDirectChildOfTemplateFor(node) && // 不是 template 标签的直接子元素并且没有包含在 for 循环中
-          Object.keys(node).every(isStaticKey) // 结点包含的属性只能有isStaticKey中指定的几个
-        ))
-      }
-      
-      function isDirectChildOfTemplateFor (node) {
-        while (node.parent) {
-          node = node.parent;
-          if (node.tag !== 'template') {
-            return false
-          }
-          if (node.for) {
             return true
-          }
+        }
+        return !!(node.pre || ( // 是否存在 v-pre
+            !node.hasBindings && // 无动态绑定
+            !node.if && !node.for && // 没有 v-if 、 v-for、v-else
+            !isBuiltInTag(node.tag) && // 不是内置的标签
+            isPlatformReservedTag(node.tag) && // 是平台保留标签(html和svg标签)
+            !isDirectChildOfTemplateFor(node) && // 不是 template 标签的直接子元素并且没有包含在 for 循环中
+            Object.keys(node).every(isStaticKey) // 结点包含的属性只能有isStaticKey中指定的几个
+        ))
+    }
+
+    function isDirectChildOfTemplateFor(node) {
+        while (node.parent) {
+            node = node.parent;
+            if (node.tag !== 'template') {
+                return false
+            }
+            if (node.for) {
+                return true
+            }
         }
         return false
-      }
+    }
 
 
     root.compileToFunctions = compileToFunctions
